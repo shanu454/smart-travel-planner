@@ -65,3 +65,6 @@ Open your browser at:
 
 Interactive Swagger API documentation:
 👉 **[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)**
+
+Project Deployed:
+👉 **[https://smart-travel-planner-steel.vercel.app/](https://smart-travel-planner-steel.vercel.app/)**
