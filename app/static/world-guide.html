@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">World Destination Guide & Itinerary | Travel Pace</title>
+  <meta name="description" id="page-meta-desc" content="Comprehensive travel guide, tourist places, day-by-day itinerary, transit intelligence, and budget calculation for iconic world destinations." />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/static/css/style.css?v=7" />
+  
+  <style>
+    /* Dedicated World Destination Page Enhancements */
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .guide-page-container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 4rem;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* Top Breadcrumbs & Back Navigation */
+    .guide-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .guide-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      padding: 0.55rem 1.1rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .guide-back-btn:hover {
+      background: var(--bg-glass-hover);
+      border-color: var(--accent-primary);
+      transform: translateX(-3px);
+    }
+
+    .guide-breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .guide-breadcrumbs a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .guide-breadcrumbs a:hover {
+      color: var(--accent-primary);
+    }
+
+    .guide-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Hero Banner */
+    .guide-hero {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-lg);
+      background-color: var(--bg-surface);
+    }
+
+    .guide-hero-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 480px;
+    }
+
+    .guide-hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.85);
+    }
+
+    .guide-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10, 13, 20, 0.2) 0%, rgba(10, 13, 20, 0.75) 60%, rgba(10, 13, 20, 0.95) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 2.5rem;
+    }
+
+    .guide-hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .guide-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-country {
+      background: rgba(99, 102, 241, 0.25);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #a5b4fc;
+    }
+
+    .badge-pace {
+      background: rgba(6, 182, 212, 0.2);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      color: #67e8f9;
+    }
+
+    .badge-days {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fcd34d;
+    }
+
+    .guide-hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      color: #ffffff;
+      margin-bottom: 0.85rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .guide-hero-excerpt {
+      font-size: 1.15rem;
+      color: #e2e8f0;
+      max-width: 860px;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .guide-hero-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .guide-author-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .guide-author-img {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-primary);
+    }
+
+    .guide-author-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .guide-author-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .guide-hero-metrics {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .guide-like-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .guide-like-btn:hover {
+      background: rgba(236, 72, 153, 0.25);
+      border-color: rgba(236, 72, 153, 0.5);
+      transform: scale(1.04);
+    }
+
+    .guide-like-btn.liked {
+      background: rgba(236, 72, 153, 0.35);
+      border-color: #ec4899;
+      color: #f472b6;
+    }
+
+    .guide-views-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+
+    /* Main Grid Layout */
+    .guide-main-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .guide-main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Content Cards */
+    .guide-content-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .guide-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .guide-section-title {
+      font-family: var(--font-heading);
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .guide-narrative {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: #cbd5e1;
+      margin-bottom: 1.25rem;
+    }
+
+    .guide-tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .guide-tag {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      color: var(--text-muted);
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.8rem;
+    }
+
+    /* Tourist Places Grid */
+    .tourist-places-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .tourist-place-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      transition: all var(--transition-normal);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .tourist-place-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--accent-primary);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .tourist-place-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .tourist-place-icon {
+      font-size: 1.75rem;
+      line-height: 1;
+      padding: 0.5rem;
+      background: rgba(99, 102, 241, 0.15);
+      border-radius: var(--radius-sm);
+    }
+
+    .tourist-place-name {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      line-height: 1.3;
+    }
+
+    .tourist-place-category {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-secondary);
+      margin-top: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .tourist-place-desc {
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      flex: 1;
+    }
+
+    /* Itinerary Timeline */
+    .itinerary-day-block {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+      background: rgba(17, 22, 37, 0.4);
+    }
+
+    .itinerary-day-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.9rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .itinerary-day-title {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .itinerary-slot-list {
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .itinerary-slot-item {
+      display: grid;
+      grid-template-columns: 85px 1fr auto;
+      gap: 1rem;
+      align-items: start;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+    }
+
+    .itinerary-slot-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .slot-time {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-amber);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: rgba(245, 158, 11, 0.1);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      text-align: center;
+    }
+
+    .slot-content h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 0.25rem;
+    }
+
+    .slot-content p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .slot-location {
+      font-size: 0.78rem;
+      color: var(--accent-secondary);
+      margin-top: 0.3rem;
+    }
+
+    .slot-cost {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #10b981;
+      white-space: nowrap;
+    }
+
+    /* Transport Cards */
+    .transit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .transit-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+    }
+
+    .transit-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .transit-mode-badge {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.2rem 0.65rem;
+      border-radius: var(--radius-pill);
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+    }
+
+    .transit-cost {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    .transit-name {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.35rem;
+    }
+
+    .transit-route {
+      font-size: 0.82rem;
+      color: var(--accent-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .transit-notes {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Packing Checklist */
+    .packing-checklist {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .packing-check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .packing-check-item input[type="checkbox"] {
+      margin-top: 0.2rem;
+      accent-color: var(--accent-primary);
+      cursor: pointer;
+    }
+
+    /* Sticky Sidebar */
+    .guide-sidebar {
+      position: sticky;
+      top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .sidebar-widget {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .sidebar-price-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+    }
+
+    .sidebar-price-val {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 1.25rem;
+    }
+
+    .sidebar-currency-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .sidebar-currency-selector select {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-glass);
+      color: #fff;
+      padding: 0.35rem 0.65rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .cost-breakdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin-bottom: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .cost-breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .cost-breakdown-row strong {
+      color: #e2e8f0;
+    }
+
+    .sidebar-clone-btn {
+      width: 100%;
+      background: var(--gradient-primary);
+      color: #fff;
+      border: none;
+      padding: 0.95rem 1.25rem;
+      border-radius: var(--radius-pill);
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: var(--font-heading);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+      transition: all var(--transition-normal);
+    }
+
+    .sidebar-clone-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+    }
+
+    .sidebar-secondary-btn {
+      width: 100%;
+      margin-top: 0.75rem;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+
+    .sidebar-secondary-btn:hover {
+      background: var(--bg-glass-hover);
+      border-color: var(--accent-secondary);
+    }
+
+    .sidebar-date-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .sidebar-date-label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+      font-weight: 600;
+    }
+
+    .sidebar-date-input {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-glass);
+      color: #fff;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+    }
+
+    /* Loading and Error States */
+    .guide-state-box {
+      text-align: center;
+      padding: 5rem 2rem;
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      max-width: 600px;
+      margin: 3rem auto;
+    }
+
+    .guide-state-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Responsive Mobile */
+    @media (max-width: 768px) {
+      .guide-hero-img-wrap {
+        height: 340px;
+      }
+      .guide-hero-overlay {
+        padding: 1.5rem;
+      }
+      .guide-hero-title {
+        font-size: 1.85rem;
+      }
+      .itinerary-slot-item {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+      }
+      .tourist-places-grid, .transit-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="navbar" style="position: sticky; top: 0; z-index: 100; backdrop-filter: blur(16px); background: rgba(10, 13, 20, 0.85); border-bottom: 1px solid var(--border-subtle);">
+    <div class="navbar-container" style="max-width: 1320px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.5rem;">
+      <a href="/index.html" class="logo" style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
+        <span class="logo-icon" style="font-size: 1.4rem;">🧭</span>
+        <span class="logo-text" style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">TRAVEL PACE</span>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 0.85rem;">
+        <a href="/index.html?view=world" class="btn btn-secondary btn-sm" style="text-decoration: none;">
+          🌍 All World Destinations
+        </a>
+        <a href="/index.html?view=stays" class="btn btn-secondary btn-sm" style="text-decoration: none;">
+          🏨 Hotels & Stays
+        </a>
+        <a href="/index.html?view=guides" class="btn btn-secondary btn-sm" id="btn-header-guides" style="text-decoration: none;">
+          🧑‍🌾 Local Guides
+        </a>
+        <button id="btn-top-clone" class="btn btn-primary btn-sm" type="button">
+          🚀 Clone to Planner
+        </button>
+
+        <!-- Auth Button / Avatar in World Guide -->
+        <div class="auth-nav-wrap" id="guide-auth-nav-wrap" style="margin-left: 0.25rem;">
+          <button id="btn-guide-auth" class="btn btn-auth-trigger btn-sm" type="button" title="Sign In or Create Account">
+            <span class="auth-btn-icon">👤</span>
+            <span class="auth-btn-label">Sign In</span>
+          </button>
+          <div class="user-nav-dropdown-wrap" id="guide-user-nav-profile" style="display: none;">
+            <div class="user-avatar-trigger" style="cursor: default;" title="Signed In Traveler">
+              <span class="user-avatar-badge" id="guide-nav-user-avatar">RS</span>
+              <span class="user-nav-name" id="guide-nav-user-name">Shanu</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Main Content Area -->
+  <main class="guide-page-container">
+    
+    <!-- Top Breadcrumb & Navigation Bar -->
+    <div class="guide-top-bar">
+      <div class="guide-breadcrumbs">
+        <a href="/index.html">Home</a>
+        <span>›</span>
+        <a href="/index.html?view=world">World Tour</a>
+        <span>›</span>
+        <span id="breadcrumb-country">Country</span>
+        <span>›</span>
+        <span id="breadcrumb-city" style="color: #fff; font-weight: 600;">Destination</span>
+      </div>
+
+      <div class="guide-top-actions">
+        <a href="/index.html?view=world" class="guide-back-btn" id="btn-back-world">
+          ← Back to World Destinations
+        </a>
+        <button class="guide-back-btn" id="btn-share-guide" type="button" title="Copy Link">
+          🔗 Share
+        </button>
+        <button class="guide-back-btn" onclick="window.print()" type="button" title="Print Guide">
+          🖨️ Print
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State Placeholder -->
+    <div id="guide-loading" class="guide-state-box">
+      <div class="guide-state-icon">🌍</div>
+      <h2 style="font-family: var(--font-heading); color: #fff; margin-bottom: 0.5rem;">Loading Destination Guide...</h2>
+      <p style="color: var(--text-muted);">Fetching verified tourist attractions, itinerary, transit intelligence, and budget...</p>
+    </div>
+
+    <!-- Error State Placeholder -->
+    <div id="guide-error" class="guide-state-box" style="display: none;">
+      <div class="guide-state-icon">🧭</div>
+      <h2 style="font-family: var(--font-heading); color: #fff; margin-bottom: 0.5rem;">Destination Guide Not Found</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">We couldn't locate the requested world destination guide. It may have moved or been renamed.</p>
+      <a href="/index.html?view=world" class="btn btn-primary">Browse All World Destinations</a>
+    </div>
+
+    <!-- Dynamic Destination Content -->
+    <div id="guide-content-wrap" style="display: none;">
+      
+      <!-- Hero Banner -->
+      <section class="guide-hero">
+        <div class="guide-hero-img-wrap">
+          <img id="guide-cover-img" src="" alt="" class="guide-hero-img" />
+          <div class="guide-hero-overlay">
+            
+            <div class="guide-hero-badges">
+              <span class="guide-badge-pill badge-country" id="badge-country">📍 Country</span>
+              <span class="guide-badge-pill badge-days" id="badge-days">⏱️ 5 Days</span>
+              <span class="guide-badge-pill badge-pace" id="badge-pace">⚖️ Moderate Pace</span>
+              <span class="guide-badge-pill" style="background: rgba(255,255,255,0.15); color: #fff;" id="badge-style">World Tour</span>
+            </div>
+
+            <h1 class="guide-hero-title" id="guide-title">Destination Title</h1>
+            <p class="guide-hero-excerpt" id="guide-excerpt">Excerpt summary</p>
+
+            <div class="guide-hero-meta-bar">
+              <div class="guide-author-info">
+                <img id="guide-author-avatar" src="" alt="Curator" class="guide-author-img" />
+                <div>
+                  <div class="guide-author-name">
+                    <span id="guide-author-name">Curator</span>
+                    <span style="color: #60a5fa; font-size: 0.9rem;" title="Verified Travel Pace Guide">✓</span>
+                  </div>
+                  <div class="guide-author-sub" id="guide-author-handle">@curator • Verified Guide Creator</div>
+                </div>
+              </div>
+
+              <div class="guide-hero-metrics">
+                <button id="btn-like-guide" class="guide-like-btn">
+                  <span id="like-icon">🤍</span>
+                  <span id="like-count">0</span>
+                </button>
+                <div class="guide-views-stat">
+                  <span>👁️</span>
+                  <span id="views-count">0</span> Views
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Layout: 2 Columns -->
+      <div class="guide-main-layout">
+        
+        <!-- Left Column: Rich Travel Guide Details -->
+        <div class="guide-left-col">
+          
+          <!-- 1. Destination Overview & Narrative -->
+          <section class="guide-content-section">
+            <div class="guide-section-header">
+              <h2 class="guide-section-title">
+                <span>📖</span> Destination Overview
+              </h2>
+            </div>
+            <p class="guide-narrative" id="guide-full-desc"></p>
+            <div class="guide-tags-row" id="guide-tags-list"></div>
+          </section>
+
+          <!-- 2. Must-Visit Tourist Places & Famous Attractions -->
+          <section class="guide-content-section">
+            <div class="guide-section-header">
+              <h2 class="guide-section-title">
+                <span>🏛️</span> Famous Tourist Places & Attractions
+              </h2>
+              <span style="font-size: 0.85rem; color: var(--accent-secondary);" id="places-count-pill">Must-Visit Landmarks</span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem;">
+              The most iconic landmarks, natural wonders, and architectural treasures to experience in <strong id="places-dest-name" style="color: #fff;">this city</strong>.
+            </p>
+            <div class="tourist-places-grid" id="tourist-places-grid">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </section>
+
+          <!-- 3. Day-by-Day Comprehensive Itinerary -->
+          <section class="guide-content-section">
+            <div class="guide-section-header">
+              <h2 class="guide-section-title">
+                <span>📅</span> Complete Day-by-Day Itinerary
+              </h2>
+              <span style="font-size: 0.85rem; color: var(--text-muted);" id="itinerary-days-pill">5-Day Schedule</span>
+            </div>
+            <div id="itinerary-days-container">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </section>
+
+          <!-- 4. Transit, Flights & Commute Intelligence -->
+          <section class="guide-content-section">
+            <div class="guide-section-header">
+              <h2 class="guide-section-title">
+                <span>🚇</span> Transportation & Commute Intelligence
+              </h2>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Transit Options</span>
+            </div>
+            <div class="transit-grid" id="transit-options-grid">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </section>
+
+          <!-- 5. Smart Packing Essentials & Local Tips -->
+          <section class="guide-content-section">
+            <div class="guide-section-header">
+              <h2 class="guide-section-title">
+                <span>🧳</span> Smart Packing & Local Travel Advice
+              </h2>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+              Destination-tailored packing checklist and practical recommendations for visiting this destination.
+            </p>
+            <div class="packing-checklist" id="packing-checklist-grid">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Right Column: Sticky Budget & Actions Sidebar -->
+        <aside class="guide-sidebar">
+          
+          <!-- Booking & Budget Calculator Card -->
+          <div class="sidebar-widget">
+            <div class="sidebar-price-label">Estimated Total Budget</div>
+            <div class="sidebar-price-val" id="sidebar-price-display">₹0</div>
+
+            <div class="sidebar-currency-selector">
+              <span>Display Currency:</span>
+              <select id="currency-dropdown">
+                <option value="INR" selected>INR (₹)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="JPY">JPY (¥)</option>
+                <option value="AUD">AUD ($)</option>
+                <option value="CAD">CAD ($)</option>
+              </select>
+            </div>
+
+            <!-- Category Cost Breakdown -->
+            <div class="cost-breakdown-list" id="cost-breakdown-container">
+              <div class="cost-breakdown-row">
+                <span>🚗 Transit & Airfare</span>
+                <strong id="cost-transit">₹0</strong>
+              </div>
+              <div class="cost-breakdown-row">
+                <span>🏨 Stays & Accommodation</span>
+                <strong id="cost-stay">₹0</strong>
+              </div>
+              <div class="cost-breakdown-row">
+                <span>🎟️ Sightseeing & Activities</span>
+                <strong id="cost-activities">₹0</strong>
+              </div>
+              <div class="cost-breakdown-row">
+                <span>🍽️ Food & Dining</span>
+                <strong id="cost-food">₹0</strong>
+              </div>
+              <div class="cost-breakdown-row">
+                <span>🎒 Support & Extras</span>
+                <strong id="cost-extras">₹0</strong>
+              </div>
+            </div>
+
+            <!-- Clone to Trip Planner Form -->
+            <div class="sidebar-date-group">
+              <label class="sidebar-date-label" for="trip-start-date">Planned Departure Date:</label>
+              <input type="date" id="trip-start-date" class="sidebar-date-input" />
+            </div>
+
+            <button id="btn-clone-guide" class="sidebar-clone-btn">
+              <span>🚀</span> Clone to My Trip Planner
+            </button>
+
+            <!-- Book Nearby Stays Link -->
+            <a id="btn-book-stays" href="/index.html?view=stays" class="sidebar-secondary-btn">
+              <span>🏨</span> Find Hotels, Hostels & Airbnbs
+            </a>
+          </div>
+
+          <!-- Connect with Local Guide Widget -->
+          <div class="sidebar-widget" style="padding: 1.5rem; background: rgba(17,24,39,0.85); border: 1px solid rgba(56,189,248,0.25);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.65rem;">
+              <span style="font-size: 1.3rem;">🧑‍🌾</span>
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin: 0;">Verified Local Guides</h3>
+            </div>
+            <p style="font-size: 0.84rem; color: #cbd5e1; line-height: 1.5; margin-bottom: 0.9rem;">
+              Connect directly with certified local guides, historians, and scholars for this destination. Chat live or hire for your itinerary.
+            </p>
+            <a id="btn-guide-connect-link" href="/index.html?view=guides" class="sidebar-clone-btn" style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); font-size: 0.88rem; text-decoration: none; padding: 0.75rem 1rem;">
+              <span>💬</span> Connect with Local Guide ↗
+            </a>
+          </div>
+
+          <!-- Quick Destination Info Card -->
+          <div class="sidebar-widget" style="padding: 1.5rem;">
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>💡</span> Traveler Quick Facts
+            </h3>
+            <div style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6; display: flex; flex-direction: column; gap: 0.6rem;">
+              <div><strong>Region:</strong> <span id="quick-region">Global</span></div>
+              <div><strong>Recommended Pace:</strong> <span id="quick-pace">Moderate</span></div>
+              <div><strong>Ideal Duration:</strong> <span id="quick-days">5 Days</span></div>
+              <div><strong>Coordinates:</strong> <span id="quick-coords" style="font-family: monospace; font-size: 0.8rem; color: var(--accent-secondary);">0.0, 0.0</span></div>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="travel-pace-footer" style="margin-top: 4rem;">
+    <div class="footer-container">
+      <div class="footer-top">
+        <div class="footer-lang-dropdown">
+          <button type="button" class="footer-lang-btn" onclick="alert('Language changed to English.')">
+            <span class="footer-globe-icon">🌐</span>
+            <span class="footer-lang-current">English</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="footer-columns-grid">
+        <div class="footer-col">
+          <h3 class="footer-col-heading">TRAVEL PACE</h3>
+          <ul class="footer-links-list">
+            <li><a href="/index.html#view-stays" class="footer-link">Hotels, Airbnbs & Hostels</a></li>
+            <li><a href="/index.html#view-explore" class="footer-link">Curated Indian Journeys</a></li>
+            <li><a href="/index.html#view-world" class="footer-link">World Destinations Tour</a></li>
+            <li><a href="/index.html#budget-section" class="footer-link">Instant Trip Budget Calculator</a></li>
+            <li><a href="mailto:shanu48050@gmail.com?subject=Travel%20Pace%20Inquiry%20from%20World%20Guide" class="footer-link" style="color: #ff9933; font-weight: 600;">✉️ Contact Us: shanu48050@gmail.com</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-col-heading">GUIDES AND RESOURCES</h3>
+          <ul class="footer-links-list">
+            <li><a href="/index.html#view-world" class="footer-link">Explore Cities and Countries</a></li>
+            <li><a href="/index.html#view-explore" class="footer-link">Trip Planners by Destination</a></li>
+            <li><a href="/index.html#budget-section" class="footer-link">Travel Budgeting & Cost Tracking</a></li>
+            <li><a href="mailto:shanu48050@gmail.com" class="footer-link">📬 Direct Support: shanu48050@gmail.com</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-col-heading">GET THE APP</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">Download Travel Pace on mobile & desktop</p>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="background: rgba(255,255,255,0.06); padding: 0.5rem 0.85rem; border-radius: 8px; font-size: 0.8rem; color: #cbd5e1;"> Available on App Store</div>
+            <div style="background: rgba(255,255,255,0.06); padding: 0.5rem 0.85rem; border-radius: 8px; font-size: 0.8rem; color: #cbd5e1;">▶ Get it on Google Play</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div class="footer-copyright-wrap">
+          <p class="footer-copyright-text">Made with ❤️ • © 2026 Travel Pace Inc. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem;"></div>
+
+  <!-- Application Logic -->
+  <script>
+    // State
+    let currentGuide = null;
+    let selectedCurrency = "INR";
+    let isLiked = false;
+
+    // Toast helper
+    function showToast(msg, type = "info") {
+      const c = document.getElementById("toast-container");
+      const t = document.createElement("div");
+      t.style.background = type === "error" ? "rgba(239, 68, 68, 0.95)" : (type === "success" ? "rgba(16, 185, 129, 0.95)" : "rgba(30, 41, 59, 0.95)");
+      t.style.color = "#fff";
+      t.style.padding = "0.75rem 1.25rem";
+      t.style.borderRadius = "9999px";
+      t.style.fontSize = "0.9rem";
+      t.style.fontWeight = "600";
+      t.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
+      t.style.border = "1px solid rgba(255,255,255,0.15)";
+      t.textContent = msg;
+      c.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = "0";
+        t.style.transition = "opacity 0.3s";
+        setTimeout(() => t.remove(), 300);
+      }, 3000);
+    }
+
+    // Currency Formatter
+    function formatCurrency(inrAmount, cur = selectedCurrency) {
+      let val = inrAmount;
+      let sym = "₹";
+      if (cur === "USD") { val = inrAmount / 84; sym = "$"; }
+      else if (cur === "EUR") { val = inrAmount / 92; sym = "€"; }
+      else if (cur === "GBP") { val = inrAmount / 108; sym = "£"; }
+      else if (cur === "JPY") { val = inrAmount * 1.8; sym = "¥"; }
+      else if (cur === "AUD") { val = inrAmount / 55; sym = "A$"; }
+      else if (cur === "CAD") { val = inrAmount / 61; sym = "C$"; }
+
+      return `${sym}${Math.round(val).toLocaleString()}`;
+    }
+
+    // Load Guide by ID
+    async function loadGuide() {
+      // 1. Extract Guide ID from Query param ?id=... or path /world-guide/...
+      const urlParams = new URLSearchParams(window.location.search);
+      let guideId = urlParams.get("id");
+      if (!guideId) {
+        const parts = window.location.pathname.split("/").filter(Boolean);
+        if (parts.length >= 2 && parts[0] === "world-guide") {
+          guideId = parts[1];
+        }
+      }
+
+      if (!guideId) {
+        // Fallback default
+        guideId = "rome-vatican-city";
+      }
+
+      try {
+        const res = await fetch(`/api/world-guides/${encodeURIComponent(guideId)}`);
+        if (!res.ok) {
+          throw new Error("Guide not found");
+        }
+        currentGuide = await res.json();
+        renderGuidePage(currentGuide);
+      } catch (err) {
+        console.error(err);
+        document.getElementById("guide-loading").style.display = "none";
+        document.getElementById("guide-error").style.display = "block";
+      }
+    }
+
+    // Render Data into DOM
+    function renderGuidePage(guide) {
+      document.getElementById("guide-loading").style.display = "none";
+      document.getElementById("guide-content-wrap").style.display = "block";
+
+      // Title & Meta
+      document.title = `${guide.title} | Travel Pace World Tour`;
+      document.getElementById("page-title").textContent = `${guide.title} | Travel Pace`;
+      document.getElementById("page-meta-desc").content = guide.description || guide.excerpt;
+
+      // Breadcrumbs
+      document.getElementById("breadcrumb-country").textContent = guide.country;
+      document.getElementById("breadcrumb-city").textContent = guide.city || guide.destination;
+
+      // Hero
+      document.getElementById("guide-cover-img").src = guide.cover_image;
+      document.getElementById("guide-cover-img").alt = guide.title;
+      document.getElementById("guide-title").textContent = guide.title;
+      document.getElementById("guide-excerpt").textContent = guide.excerpt || guide.description;
+
+      document.getElementById("badge-country").textContent = `📍 ${guide.country}`;
+      document.getElementById("badge-days").textContent = `⏱️ ${guide.recommended_days || 5} Days`;
+      document.getElementById("badge-pace").textContent = `⚖️ ${guide.travel_pace || 'Moderate'} Pace`;
+      document.getElementById("badge-style").textContent = guide.travel_style || "World Tour";
+
+      // Curator
+      document.getElementById("guide-author-name").textContent = guide.author?.name || "Verified Traveler";
+      document.getElementById("guide-author-avatar").src = guide.author?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80";
+      document.getElementById("guide-author-handle").textContent = `${guide.author?.handle || '@explorer'} • Verified Guide Curator`;
+
+      // Likes & Views
+      document.getElementById("like-count").textContent = (guide.likes || 100).toLocaleString();
+      document.getElementById("views-count").textContent = (guide.views || 1000).toLocaleString();
+
+      // Description
+      document.getElementById("guide-full-desc").textContent = guide.description;
+
+      // Tags
+      const tagsWrap = document.getElementById("guide-tags-list");
+      tagsWrap.innerHTML = "";
+      (guide.tags || []).forEach(t => {
+        const tagSpan = document.createElement("span");
+        tagSpan.className = "guide-tag";
+        tagSpan.textContent = `#${t}`;
+        tagsWrap.appendChild(tagSpan);
+      });
+
+      // Tourist Places
+      document.getElementById("places-dest-name").textContent = guide.destination;
+      const placesGrid = document.getElementById("tourist-places-grid");
+      placesGrid.innerHTML = "";
+      const touristPlaces = guide.tourist_places || [];
+      document.getElementById("places-count-pill").textContent = `${touristPlaces.length} Must-Visit Places`;
+
+      if (touristPlaces.length === 0) {
+        placesGrid.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">No landmarks specifically listed.</p>`;
+      } else {
+        touristPlaces.forEach(p => {
+          const card = document.createElement("div");
+          card.className = "tourist-place-card";
+          card.innerHTML = `
+            <div class="tourist-place-top">
+              <div class="tourist-place-icon">${p.icon || '📍'}</div>
+              <div>
+                <div class="tourist-place-name">${p.name}</div>
+                <div class="tourist-place-category">${p.category || 'Sightseeing'}</div>
+              </div>
+            </div>
+            <div class="tourist-place-desc">${p.description}</div>
+          `;
+          placesGrid.appendChild(card);
+        });
+      }
+
+      // Day-by-Day Itinerary
+      const itContainer = document.getElementById("itinerary-days-container");
+      itContainer.innerHTML = "";
+      const highlights = guide.itinerary_highlights || [];
+      
+      // Group by day
+      const daysMap = {};
+      highlights.forEach(h => {
+        const dayNum = h[0];
+        if (!daysMap[dayNum]) daysMap[dayNum] = [];
+        daysMap[dayNum].push(h);
+      });
+
+      const dayKeys = Object.keys(daysMap).sort((a,b) => Number(a) - Number(b));
+      document.getElementById("itinerary-days-pill").textContent = `${dayKeys.length}-Day Schedule`;
+
+      dayKeys.forEach(d => {
+        const dayBlock = document.createElement("div");
+        dayBlock.className = "itinerary-day-block";
+        
+        let slotItemsHtml = "";
+        daysMap[d].forEach(item => {
+          const [dNum, slot, title, loc, lat, lon, cost, cat, notes] = item;
+          slotItemsHtml += `
+            <div class="itinerary-slot-item">
+              <span class="slot-time">${slot}</span>
+              <div class="slot-content">
+                <h4>${title}</h4>
+                <p>${notes}</p>
+                <div class="slot-location">📍 ${loc}</div>
+              </div>
+              <div class="slot-cost">${formatCurrency(cost)}</div>
+            </div>
+          `;
+        });
+
+        dayBlock.innerHTML = `
+          <div class="itinerary-day-header">
+            <span class="itinerary-day-title">Day ${d}: Highlights & Activities</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">${daysMap[d].length} activities</span>
+          </div>
+          <div class="itinerary-slot-list">
+            ${slotItemsHtml}
+          </div>
+        `;
+        itContainer.appendChild(dayBlock);
+      });
+
+      // Transports
+      const transitGrid = document.getElementById("transit-options-grid");
+      transitGrid.innerHTML = "";
+      (guide.transports || []).forEach(t => {
+        const [mode, title, route, fare, notes] = t;
+        const card = document.createElement("div");
+        card.className = "transit-card";
+        card.innerHTML = `
+          <div class="transit-card-top">
+            <span class="transit-mode-badge">${mode}</span>
+            <span class="transit-cost">${formatCurrency(fare)}</span>
+          </div>
+          <div class="transit-name">${title}</div>
+          <div class="transit-route">⇄ ${route}</div>
+          <div class="transit-notes">${notes}</div>
+        `;
+        transitGrid.appendChild(card);
+      });
+
+      // Packing Checklist
+      const packGrid = document.getElementById("packing-checklist-grid");
+      packGrid.innerHTML = "";
+      (guide.packing_extras || []).forEach((item, idx) => {
+        const checkItem = document.createElement("label");
+        checkItem.className = "packing-check-item";
+        checkItem.innerHTML = `
+          <input type="checkbox" id="pack-${idx}" />
+          <span>${item}</span>
+        `;
+        packGrid.appendChild(checkItem);
+      });
+
+      // Sidebar Budget & Details
+      updateSidebarBudget();
+
+      // Quick Facts
+      document.getElementById("quick-region").textContent = guide.region || "Global";
+      document.getElementById("quick-pace").textContent = guide.travel_pace || "Moderate";
+      document.getElementById("quick-days").textContent = `${guide.recommended_days || 5} Days`;
+      document.getElementById("quick-coords").textContent = `${guide.latitude?.toFixed(4)}, ${guide.longitude?.toFixed(4)}`;
+
+      // Default planned date to 2 weeks from today
+      const defaultDate = new Date();
+      defaultDate.setDate(defaultDate.getDate() + 14);
+      document.getElementById("trip-start-date").value = defaultDate.toISOString().split("T")[0];
+
+      // Stays Link
+      document.getElementById("btn-book-stays").href = `/index.html#view-stays&place=${encodeURIComponent(guide.city || guide.destination)}`;
+
+      // Local Guides Link
+      const btnGuideConnect = document.getElementById("btn-guide-connect-link");
+      if (btnGuideConnect) {
+        btnGuideConnect.href = `/index.html?view=guides&destination=${encodeURIComponent(guide.city || guide.destination)}`;
+      }
+      const btnHeaderGuides = document.getElementById("btn-header-guides");
+      if (btnHeaderGuides) {
+        btnHeaderGuides.href = `/index.html?view=guides&destination=${encodeURIComponent(guide.city || guide.destination)}`;
+      }
+    }
+
+    // Update Sidebar Budget based on Selected Currency
+    function updateSidebarBudget() {
+      if (!currentGuide) return;
+      const bTotal = currentGuide.total_budget || 100000;
+      document.getElementById("sidebar-price-display").textContent = formatCurrency(bTotal);
+
+      document.getElementById("cost-transit").textContent = formatCurrency(bTotal * 0.35);
+      document.getElementById("cost-stay").textContent = formatCurrency(bTotal * 0.35);
+      document.getElementById("cost-activities").textContent = formatCurrency(bTotal * 0.15);
+      document.getElementById("cost-food").textContent = formatCurrency(bTotal * 0.10);
+      document.getElementById("cost-extras").textContent = formatCurrency(bTotal * 0.05);
+    }
+
+    // Currency Switcher Event
+    document.getElementById("currency-dropdown").addEventListener("change", (e) => {
+      selectedCurrency = e.target.value;
+      updateSidebarBudget();
+      if (currentGuide) {
+        renderGuidePage(currentGuide);
+      }
+    });
+
+    // Like Button Toggle
+    document.getElementById("btn-like-guide").addEventListener("click", async () => {
+      if (!currentGuide) return;
+      isLiked = !isLiked;
+      const icon = document.getElementById("like-icon");
+      const count = document.getElementById("like-count");
+      const btn = document.getElementById("btn-like-guide");
+
+      if (isLiked) {
+        btn.classList.add("liked");
+        icon.textContent = "❤️";
+        count.textContent = (currentGuide.likes + 1).toLocaleString();
+        try {
+          await fetch(`/api/world-guides/${currentGuide.id}/like`, { method: "POST" });
+        } catch (e) {
+          console.error(e);
+        }
+        showToast("Added to your liked world guides!", "success");
+      } else {
+        btn.classList.remove("liked");
+        icon.textContent = "🤍";
+        count.textContent = currentGuide.likes.toLocaleString();
+      }
+    });
+
+    // Fallback Clipboard copy
+    function fallbackCopyText(text) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        showToast("Link copied to clipboard!", "success");
+      } catch (err) {
+        showToast("Link: " + text, "info");
+      }
+      document.body.removeChild(ta);
+    }
+
+    // Share Button Event
+    document.getElementById("btn-share-guide").addEventListener("click", () => {
+      const url = window.location.href;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast("Link copied to clipboard!", "success");
+        }).catch(() => {
+          fallbackCopyText(url);
+        });
+      } else {
+        fallbackCopyText(url);
+      }
+    });
+
+    // User Authentication Check & Modal Handlers for World Guide
+    let pendingGuideCloneAction = null;
+
+    function getAuthUser() {
+      const token = localStorage.getItem("travelpace_auth_token");
+      const userStr = localStorage.getItem("travelpace_user");
+      if (token && userStr) {
+        try {
+          return { token, user: JSON.parse(userStr) };
+        } catch (e) {}
+      }
+      return null;
+    }
+
+    function updateGuideAuthUI() {
+      const auth = getAuthUser();
+      const btnAuth = document.getElementById("btn-guide-auth");
+      const profileWrap = document.getElementById("guide-user-nav-profile");
+      const avatar = document.getElementById("guide-nav-user-avatar");
+      const name = document.getElementById("guide-nav-user-name");
+
+      if (auth && auth.user) {
+        if (btnAuth) btnAuth.style.display = "none";
+        if (profileWrap) profileWrap.style.display = "block";
+        if (avatar) avatar.textContent = auth.user.initials || "TP";
+        if (name) name.textContent = auth.user.first_name || auth.user.full_name || "Traveler";
+      } else {
+        if (btnAuth) btnAuth.style.display = "inline-flex";
+        if (profileWrap) profileWrap.style.display = "none";
+      }
+    }
+
+    function openGuideAuthModal(tab = "signin") {
+      switchGuideAuthTab(tab);
+      const modal = document.getElementById("modal-guide-auth");
+      if (modal) {
+        if (typeof modal.showModal === "function") modal.showModal();
+        else modal.setAttribute("open", "");
+      }
+    }
+
+    function closeGuideAuthModal() {
+      const modal = document.getElementById("modal-guide-auth");
+      if (modal) {
+        if (typeof modal.close === "function") modal.close();
+        else modal.removeAttribute("open");
+      }
+    }
+
+    function switchGuideAuthTab(tab) {
+      const tabIn = document.getElementById("tab-guide-signin");
+      const tabUp = document.getElementById("tab-guide-signup");
+      const panelIn = document.getElementById("panel-guide-signin");
+      const panelUp = document.getElementById("panel-guide-signup");
+      const errIn = document.getElementById("guide-signin-error");
+      const errUp = document.getElementById("guide-signup-error");
+      if (errIn) errIn.style.display = "none";
+      if (errUp) errUp.style.display = "none";
+
+      if (tab === "signin") {
+        tabIn?.classList.add("active");
+        tabUp?.classList.remove("active");
+        if (panelIn) panelIn.style.display = "block";
+        if (panelUp) panelUp.style.display = "none";
+      } else {
+        tabUp?.classList.add("active");
+        tabIn?.classList.remove("active");
+        if (panelUp) panelUp.style.display = "block";
+        if (panelIn) panelIn.style.display = "none";
+      }
+    }
+
+    function setGuideAuthSession(token, user) {
+      localStorage.setItem("travelpace_auth_token", token);
+      localStorage.setItem("travelpace_user", JSON.stringify(user));
+      updateGuideAuthUI();
+      closeGuideAuthModal();
+      showToast(`Welcome, ${user.first_name || user.full_name}! 👋`, "success");
+
+      if (pendingGuideCloneAction) {
+        const action = pendingGuideCloneAction;
+        pendingGuideCloneAction = null;
+        setTimeout(() => {
+          action();
+        }, 400);
+      }
+    }
+
+    // Clone Guide to Trip Workspace
+    async function cloneCurrentGuide(event) {
+      if (event) event.preventDefault();
+      if (!currentGuide) {
+        showToast("Guide is still loading. Please wait a moment...", "info");
+        return;
+      }
+
+      // Check authentication: user must be logged in before starting to plan / clone
+      const auth = getAuthUser();
+      if (!auth) {
+        showToast("🔒 Please sign in or create an account first to start planning this trip!", "info");
+        pendingGuideCloneAction = () => cloneCurrentGuide();
+        openGuideAuthModal("signin");
+        return;
+      }
+      
+      const startDateInput = document.getElementById("trip-start-date");
+      let startDate = (startDateInput && startDateInput.value) ? startDateInput.value : "";
+      if (!startDate) {
+        const d = new Date();
+        d.setDate(d.getDate() + 14);
+        startDate = d.toISOString().split("T")[0];
+      }
+
+      const btnTop = document.getElementById("btn-top-clone");
+      const btnSide = document.getElementById("btn-clone-guide");
+      const origTopText = btnTop ? btnTop.innerHTML : "";
+      const origSideText = btnSide ? btnSide.innerHTML : "";
+
+      if (btnTop) {
+        btnTop.disabled = true;
+        btnTop.innerHTML = "<span>⏳</span> Cloning to Planner...";
+      }
+      if (btnSide) {
+        btnSide.disabled = true;
+        btnSide.innerHTML = "<span>⏳</span> Cloning Journey...";
+      }
+
+      try {
+        const res = await fetch(`/api/world-guides/${encodeURIComponent(currentGuide.id)}/clone`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ start_date: startDate })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || "Failed to clone guide");
+        }
+
+        const newTrip = await res.json();
+        showToast("Journey created! Opening your trip planner...", "success");
+
+        // Save active trip ID and redirect to index.html workspace
+        localStorage.setItem("active_trip_id", newTrip.id);
+        setTimeout(() => {
+          window.location.href = `/index.html?trip_id=${newTrip.id}&view=workspace`;
+        }, 700);
+      } catch (err) {
+        console.error(err);
+        showToast("Error creating trip: " + (err.message || "Please try again."), "error");
+        if (btnTop) {
+          btnTop.disabled = false;
+          btnTop.innerHTML = origTopText;
+        }
+        if (btnSide) {
+          btnSide.disabled = false;
+          btnSide.innerHTML = origSideText;
+        }
+      }
+    }
+
+    document.getElementById("btn-clone-guide").addEventListener("click", cloneCurrentGuide);
+    document.getElementById("btn-top-clone").addEventListener("click", cloneCurrentGuide);
+
+    // Auth Listeners on World Guide Page
+    document.getElementById("btn-guide-auth")?.addEventListener("click", () => openGuideAuthModal("signin"));
+    document.getElementById("btn-close-guide-auth")?.addEventListener("click", closeGuideAuthModal);
+    document.getElementById("tab-guide-signin")?.addEventListener("click", () => switchGuideAuthTab("signin"));
+    document.getElementById("tab-guide-signup")?.addEventListener("click", () => switchGuideAuthTab("signup"));
+    document.getElementById("link-guide-switch-signup")?.addEventListener("click", () => switchGuideAuthTab("signup"));
+    document.getElementById("link-guide-switch-signin")?.addEventListener("click", () => switchGuideAuthTab("signin"));
+
+    // Demo Login on World Guide Page
+    document.getElementById("btn-guide-demo-login")?.addEventListener("click", async () => {
+      const btn = document.getElementById("btn-guide-demo-login");
+      const orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = "<span>Logging in...</span>";
+      try {
+        const res = await fetch("/api/auth/demo-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Demo login failed");
+        setGuideAuthSession(data.token, data.user);
+      } catch (err) {
+        showToast(err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
+    });
+
+    // Sign In Form on World Guide Page
+    document.getElementById("form-guide-signin")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("guide-signin-email")?.value.trim();
+      const password = document.getElementById("guide-signin-password")?.value;
+      const errBanner = document.getElementById("guide-signin-error");
+      if (!email || !password) {
+        if (errBanner) { errBanner.textContent = "Please provide email and password."; errBanner.style.display = "block"; }
+        return;
+      }
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Incorrect email or password");
+        setGuideAuthSession(data.token, data.user);
+      } catch (err) {
+        if (errBanner) { errBanner.textContent = err.message; errBanner.style.display = "block"; }
+      }
+    });
+
+    // Sign Up Form on World Guide Page
+    document.getElementById("form-guide-signup")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const full_name = document.getElementById("guide-signup-name")?.value.trim();
+      const email = document.getElementById("guide-signup-email")?.value.trim();
+      const password = document.getElementById("guide-signup-password")?.value;
+      const errBanner = document.getElementById("guide-signup-error");
+      if (!full_name || !email || !password) {
+        if (errBanner) { errBanner.textContent = "Please fill in all required fields."; errBanner.style.display = "block"; }
+        return;
+      }
+      try {
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ full_name, email, password, preferred_currency: "INR" })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Registration failed");
+        setGuideAuthSession(data.token, data.user);
+      } catch (err) {
+        if (errBanner) { errBanner.textContent = err.message; errBanner.style.display = "block"; }
+      }
+    });
+
+    // Initial Load
+    window.addEventListener("DOMContentLoaded", () => {
+      updateGuideAuthUI();
+      loadGuide();
+    });
+  </script>
+
+  <!-- World Guide Authentication Modal -->
+  <dialog class="modal modal-auth-dialog" id="modal-guide-auth">
+    <div class="modal-backdrop-blur"></div>
+    <div class="modal-card modal-auth-card">
+      <div class="auth-modal-header">
+        <div class="auth-brand-badge">
+          <span class="auth-logo-icon">🧭</span>
+          <div class="auth-brand-text">
+            <span class="auth-brand-title">TRAVEL PACE</span>
+            <span class="auth-brand-sub">Sign in to plan your journey</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close" id="btn-close-guide-auth" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab-btn active" id="tab-guide-signin">
+          <span>🔑 Sign In</span>
+        </button>
+        <button type="button" class="auth-tab-btn" id="tab-guide-signup">
+          <span>✨ Create Account</span>
+        </button>
+      </div>
+
+      <!-- Sign In Tab -->
+      <div class="auth-tab-panel active" id="panel-guide-signin">
+        <div class="demo-login-box">
+          <div class="demo-login-meta">
+            <span class="demo-badge">⚡ Quick Access</span>
+            <span class="demo-title">Test Drive with 1-Click Demo</span>
+          </div>
+          <button type="button" class="btn btn-demo-auth" id="btn-guide-demo-login">
+            <span class="demo-icon">👤</span>
+            <span>Sign In as Sk Shanu</span>
+          </button>
+        </div>
+
+        <div class="auth-separator">
+          <span>or sign in with email</span>
+        </div>
+
+        <form id="form-guide-signin" class="auth-form" novalidate>
+          <div class="auth-error-banner" id="guide-signin-error" style="display: none;"></div>
+          <div class="form-group">
+            <label for="guide-signin-email" class="form-label">Email Address</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">✉️</span>
+              <input type="email" id="guide-signin-email" class="form-input auth-input" placeholder="name@example.com" required autocomplete="email" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="guide-signin-password" class="form-label">Password</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">🔒</span>
+              <input type="password" id="guide-signin-password" class="form-input auth-input" placeholder="Enter your password" required autocomplete="current-password" />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-glow btn-auth-submit">
+            <span class="btn-icon">🚀</span>
+            <span>Sign In & Continue Trip</span>
+          </button>
+        </form>
+
+        <div class="auth-switch-prompt">
+          <span>Don't have an account yet?</span>
+          <button type="button" class="auth-switch-link" id="link-guide-switch-signup">Create a free account</button>
+        </div>
+      </div>
+
+      <!-- Sign Up Tab -->
+      <div class="auth-tab-panel" id="panel-guide-signup" style="display: none;">
+        <div class="signup-intro">
+          <h3>Create Your Traveler Account</h3>
+          <p>Sign up to clone itineraries, plan custom routes, and calculate accurate trip budgets.</p>
+        </div>
+        <form id="form-guide-signup" class="auth-form" novalidate>
+          <div class="auth-error-banner" id="guide-signup-error" style="display: none;"></div>
+          <div class="form-group">
+            <label for="guide-signup-name" class="form-label">Full Name</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">👤</span>
+              <input type="text" id="guide-signup-name" class="form-input auth-input" placeholder="e.g. Sk Shanu" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="guide-signup-email" class="form-label">Email Address</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">✉️</span>
+              <input type="email" id="guide-signup-email" class="form-input auth-input" placeholder="you@domain.com" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="guide-signup-password" class="form-label">Password</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">🔒</span>
+              <input type="password" id="guide-signup-password" class="form-input auth-input" placeholder="At least 6 characters" required />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-glow btn-auth-submit">
+            <span class="btn-icon">✨</span>
+            <span>Create Account & Continue</span>
+          </button>
+        </form>
+
+        <div class="auth-switch-prompt">
+          <span>Already have an account?</span>
+          <button type="button" class="auth-switch-link" id="link-guide-switch-signin">Sign in to existing account</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,2961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Travel Planner | Incredible India & Transport Cost Engine</title>
+  <meta name="description" content="Intelligent multi-day Indian travel planner with discovery grid, transport cost estimates, live weather forecasts, interactive geocoded maps, and travel pace optimization." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css?v=7" />
+</head>
+<body class="dark-theme">
+  <!-- Top Navigation Bar -->
+  <header class="top-nav" id="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand" id="brand-home" title="Go to Front Page Explore Grid">
+        <div class="brand-logo-badge">
+          <span class="logo-icon">🧭</span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">TRAVEL PACE</span>
+          <span class="brand-subtitle">Smart Indian Travel Planner</span>
+        </div>
+      </div>
+
+      <!-- Navigation Mode Tabs -->
+      <div class="nav-mode-switch">
+        <button id="btn-nav-explore" class="nav-pill-btn active" title="Browse all Indian destinations">
+          <span class="nav-pill-icon">🏛️</span>
+          <span>Indian Journeys</span>
+        </button>
+        <button id="btn-nav-world" class="nav-pill-btn" title="Explore world destinations, cities & country itineraries">
+          <span class="nav-pill-icon">🌍</span>
+          <span>World Tour</span>
+        </button>
+        <button id="btn-nav-stays" class="nav-pill-btn" title="Search Hotels, Airbnb and Hostel Stays">
+          <span class="nav-pill-icon">🏨</span>
+          <span>Hotels & Stays</span>
+        </button>
+        <button id="btn-nav-guides" class="nav-pill-btn" title="Connect directly with verified local guides">
+          <span class="nav-pill-icon">🧑‍🌾</span>
+          <span>Local Guides</span>
+        </button>
+        <button id="btn-nav-dham-calc" class="nav-pill-btn nav-pill-saffron" title="Instant Trip Budget Calculator">
+          <span class="nav-pill-icon">🧮</span>
+          <span>Budget Calculator</span>
+        </button>
+        <button id="btn-nav-active-trip" class="nav-pill-btn" title="View active trip workspace">
+          <span class="nav-pill-icon">🗺️</span>
+          <span id="nav-active-trip-label">Trip Workspace</span>
+        </button>
+      </div>
+
+      <!-- Trip Selector Dropdown -->
+      <div class="nav-trip-selector">
+        <label for="trip-select" class="sr-only">Select Trip</label>
+        <select id="trip-select" class="glass-select" aria-label="Select Active Trip">
+          <option value="">Loading trips...</option>
+        </select>
+      </div>
+
+      <!-- Global Actions -->
+      <div class="nav-actions">
+        <!-- Currency Selector -->
+        <div class="currency-pill">
+          <span class="currency-symbol">💱</span>
+          <select id="global-currency-select" class="currency-select" aria-label="Select Display Currency">
+            <option value="INR" selected>INR (₹)</option>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="JPY">JPY (¥)</option>
+            <option value="AUD">AUD (A$)</option>
+            <option value="CAD">CAD (C$)</option>
+          </select>
+        </div>
+
+        <button id="btn-open-create" class="btn btn-primary btn-glow">
+          <span class="btn-icon">✨</span>
+          <span>Plan Custom Trip</span>
+        </button>
+
+        <!-- Authentication / User Profile Module -->
+        <div class="auth-nav-wrap" id="auth-nav-wrap">
+          <!-- Unauthenticated State (Default) -->
+          <button id="btn-open-auth" class="btn btn-auth-trigger" type="button" title="Sign In or Create Account">
+            <span class="auth-btn-icon">👤</span>
+            <span class="auth-btn-label">Sign In</span>
+          </button>
+
+          <!-- Authenticated State (Shown when logged in) -->
+          <div class="user-nav-dropdown-wrap" id="user-nav-profile" style="display: none;">
+            <button type="button" class="user-avatar-trigger" id="btn-user-dropdown-toggle" aria-haspopup="true" aria-expanded="false" title="Account Menu">
+              <span class="user-avatar-badge" id="nav-user-avatar">RS</span>
+              <span class="user-nav-name" id="nav-user-name">Shanu</span>
+              <span class="user-caret">▾</span>
+            </button>
+            <div class="user-dropdown-menu" id="user-dropdown-menu" style="display: none;">
+              <div class="user-dropdown-header">
+                <div class="user-dropdown-avatar" id="dropdown-user-avatar">RS</div>
+                <div class="user-dropdown-info">
+                  <div class="user-dropdown-fullname" id="dropdown-user-fullname">Sk Shanu</div>
+                  <div class="user-dropdown-email" id="dropdown-user-email">shanu48050@gmail.com</div>
+                  <span class="badge badge-sm badge-tier">✨ Pro Traveler</span>
+                </div>
+              </div>
+              <div class="user-dropdown-divider"></div>
+              <button type="button" class="user-dropdown-link" id="btn-dropdown-profile">
+                <span class="dropdown-icon">👤</span>
+                <span>My Profile & Settings</span>
+              </button>
+              <button type="button" class="user-dropdown-link" id="btn-dropdown-stays">
+                <span class="dropdown-icon">🏨</span>
+                <span>Hotels & Stays</span>
+              </button>
+              <button type="button" class="user-dropdown-link" id="btn-dropdown-trips">
+                <span class="dropdown-icon">🗺️</span>
+                <span>Browse Journeys</span>
+              </button>
+              <div class="user-dropdown-divider"></div>
+              <button type="button" class="user-dropdown-link user-dropdown-logout" id="btn-dropdown-logout">
+                <span class="dropdown-icon">🚪</span>
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Application Wrapper -->
+  <main class="app-main" id="main-content">
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 1: FRONT PAGE / EXPLORE DISCOVERY GRID (As Requested by User)    -->
+    <!-- ===================================================================== -->
+    <section class="explore-view active" id="view-explore">
+      <div class="explore-hero-banner">
+        <div class="explore-badge">🇮🇳 Curated Indian Journeys & Transit Intelligence</div>
+        <h1 class="explore-title">Discover Incredible India</h1>
+        <p class="explore-subtitle">
+          Explore iconic multi-day journeys with authentic transit costs, travel pace tuning (Relaxed, Moderate, Fast-Paced), live weather, and dynamic budgeting. Click any destination card below to explore or customize your itinerary.
+        </p>
+
+        <!-- Search and Filter Bar -->
+        <div class="explore-controls">
+          <div class="explore-search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="explore-search-input" class="explore-input" placeholder="Search Indian cities (Jaipur, Goa, Varanasi, Munnar, Manali, Udaipur, Ladakh...)" />
+          </div>
+
+          <div class="explore-filter-chips" id="explore-filter-chips">
+            <button class="chip active" data-filter="all">All Journeys (<span id="count-all-trips">12</span>)</button>
+            <button class="chip chip-saffron" data-filter="Spiritual & Pilgrimage">🕉️ Dham & Temples</button>
+            <button class="chip" data-filter="Cultural & Heritage">🏰 Heritage</button>
+            <button class="chip" data-filter="Relaxation & Beach">🏖️ Beach</button>
+            <button class="chip" data-filter="Adventure & Mountain">🏔️ Mountains & Snow</button>
+            <button class="chip" data-filter="pace-Relaxed">🧘 Relaxed Pace</button>
+            <button class="chip" data-filter="pace-Moderate">⚖️ Moderate</button>
+            <button class="chip" data-filter="pace-Fast-Paced">⚡ Fast-Paced</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4-Column Card Grid (Matching Reference Screenshot Layout) -->
+      <div class="explore-grid-container">
+        <div class="explore-grid-header">
+          <h2 class="explore-section-title">Curated Indian Destinations & Sacred Dham Journeys</h2>
+          <span class="explore-section-count" id="explore-count-pill">Showing all journeys</span>
+        </div>
+        <div class="explore-grid" id="explore-cards-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- UNIVERSAL DESTINATION INSTANT BUDGET CALCULATOR (At Bottom of Page)  -->
+      <!-- =================================================================== -->
+      <div class="dham-calc-card" id="dham-budget-calculator">
+        <div class="dham-calc-header">
+          <div class="dham-header-left">
+            <span class="dham-calc-badge">🇮🇳 Instant Trip Budget Calculator</span>
+            <h2 class="dham-calc-title">Pick Any Place, Date & Duration — Get Complete Trip Budget</h2>
+            <p class="dham-calc-subtitle">
+              Plan any journey across India — Sacred Dhams, Heritage Palaces, Beaches, Snow Peaks, or type your own destination. Our engine instantly calculates realistic costs (Transit, Stays, Activities, and Food) and synthesizes your multi-day itinerary.
+            </p>
+          </div>
+          <div class="dham-header-right">
+            <span class="sacred-symbol">✈️</span>
+          </div>
+        </div>
+
+        <div class="dham-calc-body">
+          <!-- Inputs Column -->
+          <div class="dham-inputs-column">
+            <!-- Typable Destination Input with Curated Combo Select & Datalist -->
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                <label for="dham-custom-dest" class="dham-label" style="margin-bottom: 0;">
+                  <span class="label-icon">📍</span> SELECT DESTINATION:
+                </label>
+                <span class="dham-dest-hint" style="font-size: 0.76rem; color: #fed7aa; opacity: 0.85;">Type any city or pick from list</span>
+              </div>
+              <div class="dham-dest-combo-box">
+                <input
+                  type="text"
+                  id="dham-custom-dest"
+                  class="glass-input dham-select-lg dham-dest-type-input"
+                  placeholder="Type any destination (e.g. Kedarnath, Mohali, Jaipur, Goa, Manali, Munnar...)"
+                  value="Kedarnath & Badrinath"
+                  list="dham-destinations-datalist"
+                  autocomplete="off"
+                />
+                <select id="dham-select" class="glass-select dham-combo-select" title="Or pick from curated list" aria-label="Curated Destinations">
+                  <option value="">▼ Curated List</option>
+                  <optgroup label="🕉️ Sacred Dham & Temple Yatras">
+                    <option value="do-dham-kedarnath-badrinath" selected>Kedarnath & Badrinath Do Dham Yatra</option>
+                    <option value="char-dham-uttarakhand">Complete Uttarakhand Char Dham Yatra</option>
+                    <option value="vaishno-devi-shiv-khori">Mata Vaishno Devi & Shiv Khori Dham</option>
+                    <option value="tirupati-balaji">Tirupati Balaji & Srikalahasti Divine Darshan</option>
+                    <option value="ayodhya-kashi">Ayodhya Ram Mandir & Kashi Vishwanath Dham</option>
+                    <option value="jagannath-puri">Shree Jagannath Puri Dham & Konark Sun Temple</option>
+                    <option value="dwarka-somnath">Dwarka & Somnath Jyotirlinga Yatra</option>
+                    <option value="ujjain-omkareshwar">Ujjain Mahakaleshwar & Omkareshwar Jyotirlinga</option>
+                    <option value="rameswaram-madurai">Rameswaram 22 Theerthams & Madurai Meenakshi</option>
+                    <option value="amritsar-golden-temple">Amritsar Sri Harmandir Sahib & Wagah Border</option>
+                  </optgroup>
+                  <optgroup label="🏰 Heritage, Palaces & Forts">
+                    <option value="jaipur-pink-city">Jaipur Pink City & Amber Fort</option>
+                    <option value="udaipur-city-of-lakes">Udaipur City of Lakes & Lake Pichola</option>
+                  </optgroup>
+                  <optgroup label="🏖️ Beaches & Coastal Getaways">
+                    <option value="goa-sun-sand">Goa North & South Beaches & Cruises</option>
+                  </optgroup>
+                  <optgroup label="🏔️ Himalayas, Snow & Hill Stations">
+                    <option value="manali-solang-snow">Manali, Solang Valley & Atal Tunnel</option>
+                    <option value="leh-ladakh-high-passes">Leh Ladakh, Pangong Tso & Khardung La</option>
+                    <option value="munnar-alleppey-kerala">Munnar Tea Hills & Alleppey Houseboat</option>
+                  </optgroup>
+                </select>
+              </div>
+              <datalist id="dham-destinations-datalist">
+                <option value="Kedarnath & Badrinath">
+                <option value="Uttarakhand Char Dham">
+                <option value="Mata Vaishno Devi">
+                <option value="Tirupati Balaji">
+                <option value="Ayodhya Ram Mandir & Kashi">
+                <option value="Jagannath Puri">
+                <option value="Dwarka & Somnath">
+                <option value="Ujjain & Omkareshwar">
+                <option value="Rameswaram & Madurai">
+                <option value="Amritsar Golden Temple">
+                <option value="Jaipur">
+                <option value="Udaipur">
+                <option value="Goa">
+                <option value="Manali">
+                <option value="Leh Ladakh">
+                <option value="Munnar & Alleppey">
+                <option value="Rishikesh">
+                <option value="Shimla">
+                <option value="Ooty">
+                <option value="Darjeeling">
+                <option value="Mohali">
+              </datalist>
+              <div class="dham-quick-dest-chips" id="dham-quick-dest-chips">
+                <button type="button" class="chip chip-sm active" data-dest="Kedarnath & Badrinath">🕉️ Kedarnath</button>
+                <button type="button" class="chip chip-sm" data-dest="Ayodhya & Kashi">🛕 Ayodhya</button>
+                <button type="button" class="chip chip-sm" data-dest="Jaipur">🏰 Jaipur</button>
+                <button type="button" class="chip chip-sm" data-dest="Goa">🏖️ Goa</button>
+                <button type="button" class="chip chip-sm" data-dest="Manali">🏔️ Manali</button>
+                <button type="button" class="chip chip-sm" data-dest="Udaipur">✨ Udaipur</button>
+                <button type="button" class="chip chip-sm" data-dest="Munnar & Alleppey">🌴 Munnar</button>
+                <button type="button" class="chip chip-sm" data-dest="Char Dham (Uttarakhand)">🕉️ Char Dham</button>
+              </div>
+            </div>
+
+            <!-- Duration (Days) - Freely Selected by User for Any Place -->
+            <div class="form-group" style="margin-top: 0.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                <label for="dham-custom-days" class="dham-label" style="margin-bottom: 0;">
+                  <span class="label-icon">⏱️</span> Trip Duration (Days) — Choose Any Days:
+                </label>
+                <span id="dham-days-pill-badge" class="badge badge-dates">6 Days</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+                <input type="number" id="dham-custom-days" class="glass-input" value="6" min="1" max="60" style="max-width: 100px; font-weight: 700; text-align: center;" />
+                <div class="quick-days-chips" id="dham-quick-days">
+                  <button type="button" class="chip chip-sm" data-days="2">2d</button>
+                  <button type="button" class="chip chip-sm" data-days="3">3d</button>
+                  <button type="button" class="chip chip-sm" data-days="4">4d</button>
+                  <button type="button" class="chip chip-sm" data-days="5">5d</button>
+                  <button type="button" class="chip chip-sm active" data-days="6">6d</button>
+                  <button type="button" class="chip chip-sm" data-days="7">7d</button>
+                  <button type="button" class="chip chip-sm" data-days="10">10d</button>
+                  <button type="button" class="chip chip-sm" data-days="14">14d</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="dham-date" class="dham-label">
+                  <span class="label-icon">📅</span> Travel Date:
+                </label>
+                <input type="date" id="dham-date" class="glass-input" />
+              </div>
+              <div class="form-group">
+                <label for="dham-time" class="dham-label">
+                  <span class="label-icon">⏱️</span> Departure Time:
+                </label>
+                <select id="dham-time" class="glass-select">
+                  <option value="05:00 AM (Brahma Muhurta / Early Bird)">05:00 AM (Early Departure)</option>
+                  <option value="06:30 AM (Sunrise Departure)" selected>06:30 AM (Sunrise Departure)</option>
+                  <option value="09:00 AM (Morning Departure)">09:00 AM (Morning Departure)</option>
+                  <option value="02:00 PM (Afternoon Transit)">02:00 PM (Afternoon Transit)</option>
+                  <option value="08:00 PM (Overnight Transit)">08:00 PM (Overnight Train/Bus)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="dham-tier" class="dham-label">
+                  <span class="label-icon">⭐</span> Comfort Tier:
+                </label>
+                <select id="dham-tier" class="glass-select">
+                  <option value="Standard" selected>Standard (AC Hotel + Cab / 2AC / Semi-VIP)</option>
+                  <option value="Budget">Budget (Hostel / Dharamshala + Train / Shared)</option>
+                  <option value="Premium">Premium (Luxury Resort / Flight / Innova / VIP)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="dham-pilgrims" class="dham-label">
+                  <span class="label-icon">👥</span> Number of Travelers:
+                </label>
+                <input type="number" id="dham-pilgrims" class="glass-input" value="1" min="1" max="25" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Output & Budget Breakdown Column -->
+          <div class="dham-results-column">
+            <div class="dham-budget-display">
+              <span class="budget-ticker-label">Total Estimated Trip Budget</span>
+              <div class="budget-ticker-figure" id="dham-total-budget">₹27,170</div>
+              <span class="budget-ticker-sub" id="dham-per-person">₹27,170 per person • 6 Days (Standard Tier)</span>
+            </div>
+
+            <div class="dham-breakdown-grid">
+              <div class="dham-breakdown-item">
+                <span class="breakdown-icon">🚆</span>
+                <div class="breakdown-info">
+                  <span class="breakdown-title">Transit & Commute</span>
+                  <span class="breakdown-amt" id="dham-cost-transport">₹8,820</span>
+                </div>
+              </div>
+              <div class="dham-breakdown-item">
+                <span class="breakdown-icon">🏨</span>
+                <div class="breakdown-info">
+                  <span class="breakdown-title">Hotels & Stays</span>
+                  <span class="breakdown-amt" id="dham-cost-stay">₹9,000</span>
+                </div>
+              </div>
+              <div class="dham-breakdown-item">
+                <span class="breakdown-icon">🎟️</span>
+                <div class="breakdown-info">
+                  <span class="breakdown-title">Sightseeing & Passes</span>
+                  <span class="breakdown-amt" id="dham-cost-pooja">₹2,500</span>
+                </div>
+              </div>
+              <div class="dham-breakdown-item">
+                <span class="breakdown-icon">🍱</span>
+                <div class="breakdown-info">
+                  <span class="breakdown-title">Food & Dining</span>
+                  <span class="breakdown-amt" id="dham-cost-food">₹5,400</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 1-Click Generate Button -->
+            <button id="btn-generate-dham-trip" class="btn btn-saffron btn-glow-saffron">
+              <span class="btn-icon">✨</span>
+              <span>Generate Trip with This Budget</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW: WORLD DESTINATIONS TOUR (Explore Cities & Countries Worldwide)  -->
+    <!-- Matching the User's Travel Guides & Itineraries Reference Layout     -->
+    <!-- ===================================================================== -->
+    <section class="world-view" id="view-world" style="display: none;">
+      <!-- World Hero Section -->
+      <div class="world-hero">
+        <div class="world-badge">🌍 Global Expeditions & City Itineraries</div>
+        <h1 class="world-title">Explore travel guides and itineraries</h1>
+
+        <!-- Search Input Bar -->
+        <div class="world-search-container">
+          <div class="world-search-box">
+            <span class="world-search-icon">🔍</span>
+            <input
+              type="text"
+              id="world-search-input"
+              class="world-input"
+              placeholder="Search for a destination..."
+              autocomplete="off"
+              aria-label="Search destination guides"
+            />
+            <button id="btn-clear-world-search" class="world-clear-btn" style="display: none;" title="Clear search">&times;</button>
+          </div>
+        </div>
+
+        <!-- Popular Destinations Filter Chips -->
+        <div class="world-popular-bar">
+          <span class="world-popular-label">Or browse our most popular destinations:</span>
+          <div class="world-popular-chips" id="world-popular-chips">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid Header -->
+      <div class="world-grid-header">
+        <div class="world-header-left">
+          <h2 class="world-section-heading">Recent guides</h2>
+          <span class="world-count-pill" id="world-count-pill">Showing 12 guides</span>
+        </div>
+        <div class="world-header-right" id="world-active-filter-wrap" style="display: none;">
+          <span class="world-filter-indicator">
+            Filtered by: <strong id="world-filter-name">Japan</strong>
+            <button id="btn-world-clear-filter" class="world-filter-clear-x" title="Clear filter">&times;</button>
+          </span>
+        </div>
+      </div>
+
+      <!-- 4-Column World Guides Grid -->
+      <div class="world-cards-grid" id="world-cards-grid">
+        <!-- Rendered dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW: HOTELS, AIRBNB & HOSTELS (Stays Search & Lodging Discovery)      -->
+    <!-- Matching the User's Wanderlog Search Reference Layout                 -->
+    <!-- ===================================================================== -->
+    <section class="stays-view" id="view-stays" style="display: none;">
+      <!-- Stays Hero Section with Illuminated Pool Resort Backdrop -->
+      <div class="stays-hero">
+        <div class="stays-hero-overlay"></div>
+        <div class="stays-hero-content">
+          <div class="stays-badge">🏨 Hotels, Airbnb & Hostels in One Place</div>
+          <h1 class="stays-hero-title">Search for hotel and Airbnb stays in one place</h1>
+          <p class="stays-hero-subtitle">Experience a better hotel search that helps you find the perfect lodging, with your preferences as the highest priority.</p>
+
+          <!-- Unified Search Bar Card (Matching Wanderlog Reference Screenshot) -->
+          <div class="stays-search-card">
+            <!-- Lodging Type Selector Chips -->
+            <div class="stays-type-tabs" id="stays-type-tabs">
+              <button type="button" class="stays-type-tab active" data-type="all">✨ All Stays</button>
+              <button type="button" class="stays-type-tab" data-type="hotel">🏨 Hotels</button>
+              <button type="button" class="stays-type-tab" data-type="airbnb">🏡 Airbnb & Villas</button>
+              <button type="button" class="stays-type-tab" data-type="hostel">🎒 Hostels & Pods</button>
+            </div>
+
+            <!-- Unified Search Inputs Row -->
+            <div class="stays-search-form">
+              <!-- Where Field -->
+              <div class="stays-form-cell stays-cell-where">
+                <label for="stays-search-input" class="stays-cell-label">Where</label>
+                <div class="stays-input-wrap">
+                  <span class="stays-input-icon">📍</span>
+                  <input
+                    type="text"
+                    id="stays-search-input"
+                    class="stays-input"
+                    placeholder="Search destinations, cities, or stays..."
+                    autocomplete="off"
+                  />
+                  <button id="btn-clear-stays-search" class="stays-clear-x" style="display: none;" title="Clear search">&times;</button>
+                </div>
+              </div>
+
+              <!-- When Field (Check-in & Check-out) -->
+              <div class="stays-form-cell stays-cell-when">
+                <label class="stays-cell-label">When</label>
+                <div class="stays-dates-wrap">
+                  <div class="stays-date-sub">
+                    <span class="stays-input-icon">📅</span>
+                    <input type="date" id="stays-checkin-date" class="stays-date-input" aria-label="Check-in date" />
+                  </div>
+                  <span class="stays-date-sep">|</span>
+                  <div class="stays-date-sub">
+                    <input type="date" id="stays-checkout-date" class="stays-date-input" aria-label="Check-out date" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Travelers & Rooms Field -->
+              <div class="stays-form-cell stays-cell-travelers">
+                <label for="stays-travelers-select" class="stays-cell-label">Travelers</label>
+                <div class="stays-input-wrap">
+                  <span class="stays-input-icon">🛏️</span>
+                  <select id="stays-travelers-select" class="stays-select" aria-label="Rooms and Guests">
+                    <option value="1-1">1 Room • 1 Guest</option>
+                    <option value="1-2" selected>1 Room • 2 Guests</option>
+                    <option value="1-3">1 Room • 3 Guests</option>
+                    <option value="1-4">1 Room • 4 Guests</option>
+                    <option value="2-4">2 Rooms • 4 Guests</option>
+                    <option value="3-6">Entire Villa • 6+ Guests</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Search Action Button -->
+              <div class="stays-form-cell stays-cell-btn">
+                <button type="button" id="btn-search-stays" class="btn-stays-search">
+                  <span>Search</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Manage Bookings Subtext Link -->
+            <div class="stays-sub-link">
+              <span>Already booked? </span>
+              <button type="button" id="btn-stays-manage-bookings" class="link-btn-highlight">Manage your bookings</button>
+            </div>
+
+            <!-- Popular Destinations Filter Chips -->
+            <div class="stays-popular-bar">
+              <span class="stays-popular-label">Popular destinations:</span>
+              <div class="stays-popular-chips" id="stays-popular-chips">
+                <!-- Injected dynamically via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters & Sorting Bar -->
+      <div class="stays-toolbar-wrap">
+        <div class="stays-toolbar">
+          <div class="stays-toolbar-left">
+            <!-- Lodging Type Filter Pills -->
+            <div class="stays-filter-group" id="stays-filter-type-pills">
+              <button type="button" class="chip chip-pill active" data-filter-type="all">All (20)</button>
+              <button type="button" class="chip chip-pill" data-filter-type="hotel">Hotels (7)</button>
+              <button type="button" class="chip chip-pill" data-filter-type="airbnb">Airbnb & Villas (7)</button>
+              <button type="button" class="chip chip-pill" data-filter-type="hostel">Hostels & Pods (6)</button>
+            </div>
+
+            <!-- Price Filter Dropdown -->
+            <div class="stays-filter-select-wrap">
+              <select id="stays-price-filter" class="glass-select stays-filter-dropdown" aria-label="Filter by Price">
+                <option value="all" selected>All Price Ranges</option>
+                <option value="budget">Under ₹1,500/night (Backpacker / Hostel)</option>
+                <option value="mid">₹1,500 – ₹6,000/night (Comfort / Homestay)</option>
+                <option value="premium">₹6,000 – ₹15,000/night (Resorts & Villas)</option>
+                <option value="luxury">₹15,000+/night (Luxury Palaces)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="stays-toolbar-right">
+            <!-- Sort By Select -->
+            <div class="stays-sort-wrap">
+              <label for="stays-sort-select" class="stays-sort-label">Sort by:</label>
+              <select id="stays-sort-select" class="glass-select stays-sort-dropdown" aria-label="Sort Stays">
+                <option value="rating" selected>⭐ Highest Rated</option>
+                <option value="price_asc">💰 Price: Low to High</option>
+                <option value="price_desc">💎 Price: High to Low</option>
+                <option value="reviews">💬 Most Reviewed</option>
+              </select>
+            </div>
+            <span class="stays-results-counter" id="stays-count-pill">Showing 20 stays</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4-Column Stays Cards Grid -->
+      <div class="stays-grid-container">
+        <div class="stays-cards-grid" id="stays-cards-grid">
+          <!-- Dynamically populated via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW: LOCAL TRAVEL GUIDES & DIRECT CONNECTION                         -->
+    <!-- Connect directly with certified guides via Chat, WhatsApp & Inquiries  -->
+    <!-- ===================================================================== -->
+    <section class="guides-view" id="view-guides" style="display: none;">
+      <!-- Guides Hero Section with Atmospheric Backdrop -->
+      <div class="guides-hero">
+        <div class="guides-hero-overlay"></div>
+        <div class="guides-hero-content">
+          <div class="guides-badge">🧑‍🌾 Verified Local Guides • Direct Connect</div>
+          <h1 class="guides-hero-title">Connect directly with certified local travel guides</h1>
+          <p class="guides-hero-subtitle">Chat in real-time, message on WhatsApp, or hire licensed spiritual scholars, heritage historians, and trekking sherpas across India and world destinations.</p>
+
+          <!-- Search & Filter Card -->
+          <div class="guides-search-card">
+            <!-- Specialty Filter Tabs -->
+            <div class="guides-type-tabs" id="guides-type-tabs">
+              <button type="button" class="guides-type-tab active" data-region="all">✨ All Guides</button>
+              <button type="button" class="guides-type-tab" data-region="Spiritual & Pilgrimage">🕉️ Sacred & Temples</button>
+              <button type="button" class="guides-type-tab" data-region="Cultural & Heritage">🏰 Heritage & Palaces</button>
+              <button type="button" class="guides-type-tab" data-region="Adventure & Mountain">🏔️ Trekking & Mountains</button>
+              <button type="button" class="guides-type-tab" data-region="Relaxation & Beach">🏖️ Coastal & Marine</button>
+              <button type="button" class="guides-type-tab" data-region="World">🌍 World Destinations</button>
+            </div>
+
+            <!-- Unified Search Inputs Row -->
+            <div class="guides-search-form">
+              <!-- Search Field -->
+              <div class="guides-form-cell guides-cell-search">
+                <label for="guides-search-input" class="guides-cell-label">Search Guide or Destination</label>
+                <div class="guides-input-wrap">
+                  <span class="guides-input-icon">🔍</span>
+                  <input
+                    type="text"
+                    id="guides-search-input"
+                    class="guides-input"
+                    placeholder="Search by city (e.g. Varanasi, Kedarnath, Jaipur, Tokyo) or guide name..."
+                    autocomplete="off"
+                  />
+                  <button id="btn-clear-guides-search" class="guides-clear-x" style="display: none;" title="Clear search">&times;</button>
+                </div>
+              </div>
+
+              <!-- Spoken Language Field -->
+              <div class="guides-form-cell guides-cell-language">
+                <label for="guides-lang-select" class="guides-cell-label">Language</label>
+                <div class="guides-input-wrap">
+                  <span class="guides-input-icon">🗣️</span>
+                  <select id="guides-lang-select" class="guides-select" aria-label="Select Spoken Language">
+                    <option value="all" selected>All Languages</option>
+                    <option value="Hindi">हिन्दी (Hindi)</option>
+                    <option value="English">English</option>
+                    <option value="Sanskrit">Sanskrit (Vedic)</option>
+                    <option value="French">Français (French)</option>
+                    <option value="Japanese">日本語 (Japanese)</option>
+                    <option value="Italian">Italiano (Italian)</option>
+                    <option value="Arabic">العربية (Arabic)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Search Button -->
+              <div class="guides-form-cell guides-cell-btn">
+                <button type="button" id="btn-search-guides" class="btn-guides-search">
+                  <span>Search Guides</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Destination Filter Chips -->
+            <div class="guides-popular-bar">
+              <span class="guides-popular-label">Popular Guide Destinations:</span>
+              <div class="guides-popular-chips" id="guides-popular-chips">
+                <button type="button" class="chip chip-sm active" data-dest="all">All</button>
+                <button type="button" class="chip chip-sm" data-dest="Varanasi">🕉️ Varanasi</button>
+                <button type="button" class="chip chip-sm" data-dest="Kedarnath">🏔️ Kedarnath</button>
+                <button type="button" class="chip chip-sm" data-dest="Jaipur">🏰 Jaipur</button>
+                <button type="button" class="chip chip-sm" data-dest="Goa">🏖️ Goa</button>
+                <button type="button" class="chip chip-sm" data-dest="Ayodhya">🛕 Ayodhya</button>
+                <button type="button" class="chip chip-sm" data-dest="Manali">🌲 Manali</button>
+                <button type="button" class="chip chip-sm" data-dest="Rishikesh">🧘 Rishikesh</button>
+                <button type="button" class="chip chip-sm" data-dest="Tokyo">🗾 Tokyo</button>
+                <button type="button" class="chip chip-sm" data-dest="Paris">🗼 Paris</button>
+                <button type="button" class="chip chip-sm" data-dest="Rome">🏛️ Rome</button>
+                <button type="button" class="chip chip-sm" data-dest="Cairo">🏺 Cairo</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters & Sorting Bar -->
+      <div class="guides-toolbar-wrap">
+        <div class="guides-toolbar">
+          <div class="guides-toolbar-left">
+            <span class="guides-verified-badge-pill">🛡️ 100% Government & Ministry of Tourism Certified Guides</span>
+          </div>
+          <div class="guides-toolbar-right">
+            <div class="guides-sort-wrap">
+              <label for="guides-sort-select" class="guides-sort-label">Sort by:</label>
+              <select id="guides-sort-select" class="glass-select guides-sort-dropdown" aria-label="Sort Guides">
+                <option value="rating" selected>⭐ Highest Rated</option>
+                <option value="experience">🏆 Most Experienced</option>
+                <option value="price_asc">💰 Price: Low to High</option>
+                <option value="price_desc">💎 Price: High to Low</option>
+                <option value="reviews">💬 Most Reviewed</option>
+              </select>
+            </div>
+            <span class="guides-results-counter" id="guides-count-pill">Showing 12 verified guides</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3-Column Guides Grid -->
+      <div class="guides-grid-container">
+        <div class="guides-cards-grid" id="guides-cards-grid">
+          <!-- Dynamically populated via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2: DETAILED TRIP DASHBOARD                                       -->
+    <!-- ===================================================================== -->
+    <section class="trip-detail-view" id="view-trip-detail" style="display: none;">
+
+      <!-- Top Back Banner -->
+      <div class="back-bar">
+        <button id="btn-back-to-explore" class="btn btn-secondary btn-sm">
+          <span>← Back to All Destinations</span>
+        </button>
+        <span class="back-crumb-separator">•</span>
+        <span class="back-crumb-dest" id="back-crumb-text">Jaipur, India</span>
+      </div>
+
+      <!-- Active Trip Hero Banner -->
+      <section class="trip-hero" id="trip-hero">
+        <div class="hero-backdrop" id="hero-backdrop"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-tags-row">
+            <div class="hero-tags">
+              <span class="badge badge-destination" id="hero-destination">Jaipur, India</span>
+              <span class="badge badge-style" id="hero-style">Cultural & Heritage</span>
+              <span class="badge badge-pace" id="hero-pace">⚖️ Moderate Pace</span>
+              <span class="badge badge-dates" id="hero-dates">Nov 10 – Nov 14</span>
+              <span class="badge badge-trip-status badge-status-active" id="hero-trip-status"><span class="status-dot"></span> Active Journey</span>
+            </div>
+
+            <!-- Trip Completion & Feedback Actions -->
+            <button id="btn-hero-complete-trip" class="btn btn-emerald btn-xs pace-pill-calc" title="Mark journey as completed">
+              <span class="btn-icon">✅</span>
+              <span id="btn-hero-complete-label">Mark Completed</span>
+            </button>
+            <button id="btn-hero-open-feedback" class="btn btn-saffron-soft btn-xs pace-pill-calc" title="Share your trip feedback and review">
+              <span class="btn-icon">⭐</span>
+              <span>Feedback</span>
+            </button>
+
+            <!-- Quick Link to Destination Budget Calculator -->
+            <button id="btn-hero-calc-budget" class="btn btn-saffron btn-xs pace-pill-calc" title="Open Instant Trip Budget Calculator">
+              <span class="btn-icon">🇮🇳</span>
+              <span>Trip Budget Calculator</span>
+            </button>
+
+            <!-- Quick Travel Pace Switcher -->
+            <div class="pace-switcher-pill">
+              <span class="pace-pill-icon">⏱️</span>
+              <label for="trip-pace-select" class="pace-pill-label">Pace:</label>
+              <select id="trip-pace-select" class="pace-inline-select" aria-label="Change Travel Pace">
+                <option value="Relaxed">🧘 Relaxed (2 acts/day)</option>
+                <option value="Moderate" selected>⚖️ Moderate (3 acts/day)</option>
+                <option value="Fast-Paced">⚡ Fast-Paced (5 acts/day)</option>
+              </select>
+            </div>
+          </div>
+
+          <h1 class="hero-title" id="hero-title">5-Day Royal Rajasthan Heritage: Jaipur & Amber Odyssey</h1>
+          <p class="hero-notes" id="hero-notes">Loading destination highlights and live travel recommendations...</p>
+
+          <!-- Quick Metrics Bar -->
+          <div class="hero-metrics">
+            <div class="metric-card">
+              <span class="metric-label">Duration</span>
+              <span class="metric-value" id="metric-duration">5 Days</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Countdown</span>
+              <span class="metric-value metric-accent" id="metric-countdown">--</span>
+            </div>
+            <div class="metric-card metric-card-interactive" id="metric-card-budget" title="Click to view & calculate trip budget" style="cursor: pointer;">
+              <span class="metric-label">Total Budget ⚡</span>
+              <span class="metric-value" id="metric-budget">₹35,000</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Budget Used</span>
+              <span class="metric-value" id="metric-spent">₹19,600 (56%)</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Packed</span>
+              <span class="metric-value metric-success" id="metric-packing">0%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Navigation Tabs (Featuring the new Transport Section!) -->
+      <nav class="sub-nav-tabs" aria-label="Trip Views">
+        <div class="tabs-container">
+          <button class="tab-btn active" data-tab="itinerary" id="tab-btn-itinerary">
+            <span class="tab-icon">🗺️</span> Itinerary & Map
+          </button>
+          <button class="tab-btn" data-tab="transport" id="tab-btn-transport">
+            <span class="tab-icon">🚗</span> Transport & Commute
+          </button>
+          <button class="tab-btn" data-tab="weather" id="tab-btn-weather">
+            <span class="tab-icon">⛅</span> Live Weather
+          </button>
+          <button class="tab-btn" data-tab="budget" id="tab-btn-budget">
+            <span class="tab-icon">💰</span> Budget & Expenses
+          </button>
+          <button class="tab-btn" data-tab="packing" id="tab-btn-packing">
+            <span class="tab-icon">🧳</span> Smart Packing
+          </button>
+          <button class="tab-btn" data-tab="ai" id="tab-btn-ai">
+            <span class="tab-icon">🤖</span> AI Travel Guide
+          </button>
+          <button class="tab-btn" data-tab="feedback" id="tab-btn-feedback">
+            <span class="tab-icon">⭐</span> Trip Feedback
+          </button>
+          <button class="tab-btn" data-tab="guides" id="tab-btn-guides">
+            <span class="tab-icon">🧑‍🌾</span> Local Guides
+          </button>
+        </div>
+      </nav>
+
+      <!-- TAB 1: ITINERARY & MAP VIEW -->
+      <section class="tab-pane active" id="pane-itinerary">
+        <div class="split-view">
+          <!-- Itinerary Column -->
+          <div class="itinerary-column">
+            <!-- Day Selector Bar -->
+            <div class="day-selector-header">
+              <div class="day-pills-scroll" id="day-pills-wrap">
+                <!-- Day buttons injected via JS -->
+              </div>
+              <button id="btn-open-add-activity" class="btn btn-secondary btn-sm">
+                <span>+ Add Activity</span>
+              </button>
+            </div>
+
+            <!-- Current Day Overview Card -->
+            <div class="day-overview-card" id="day-overview-card">
+              <div class="day-overview-info">
+                <h3 class="day-title" id="current-day-title">Day 1: Arrival & Historic City Center</h3>
+                <p class="day-stats" id="current-day-stats">3 activities planned • Est. cost ₹1,200</p>
+              </div>
+              <div class="day-progress-wrap">
+                <span class="progress-label" id="day-progress-text">0 of 3 done</span>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" id="day-progress-fill" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Activities Timeline List -->
+            <div class="activities-timeline" id="activities-timeline">
+              <!-- Dynamically populated activities -->
+            </div>
+          </div>
+
+          <!-- Interactive Map Column -->
+          <div class="map-column">
+            <div class="map-card">
+              <div class="map-header">
+                <div class="map-title-row">
+                  <h3 class="map-title">Interactive Route Map</h3>
+                  <span class="map-badge" id="map-stops-badge">3 Stops</span>
+                </div>
+                <p class="map-subtitle">Click markers to inspect details or zoom to locations.</p>
+              </div>
+              <div id="leaflet-map" class="map-container"></div>
+              <div class="map-footer">
+                <span class="map-legend-item"><span class="legend-dot dot-morning"></span> Morning</span>
+                <span class="map-legend-item"><span class="legend-dot dot-afternoon"></span> Afternoon</span>
+                <span class="map-legend-item"><span class="legend-dot dot-evening"></span> Evening</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 2: TRANSPORT & COMMUTE SECTION (WITH COSTS)                     -->
+      <!-- =================================================================== -->
+      <section class="tab-pane" id="pane-transport">
+        <div class="transport-dashboard">
+          <!-- Transport Header Card -->
+          <div class="transport-header-card">
+            <div class="transport-header-info">
+              <div class="badge badge-accent">🚗 Transit & Commute Planner</div>
+              <h2>Transport Options & Realistic Commute Costs</h2>
+              <p>Realistic Indian transit options: Vande Bharat trains, domestic flights, prepaid airport cabs, local tuk-tuks & bike rentals with local booking hacks.</p>
+            </div>
+            <div class="transport-actions">
+              <button id="btn-open-add-transport" class="btn btn-primary">
+                <span>+ Add Transport Option</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Transport Summary Metric Cards -->
+          <div class="transport-stats-grid">
+            <div class="transport-stat-card">
+              <div class="stat-icon">💳</div>
+              <div class="stat-content">
+                <span class="stat-label">Total Estimated Transit</span>
+                <span class="stat-value" id="transport-total-cost">₹0</span>
+                <span class="stat-sub" id="transport-total-count">0 options configured</span>
+              </div>
+            </div>
+            <div class="transport-stat-card">
+              <div class="stat-icon">✅</div>
+              <div class="stat-content">
+                <span class="stat-label">Booked & Confirmed</span>
+                <span class="stat-value text-success" id="transport-booked-cost">₹0</span>
+                <span class="stat-sub" id="transport-booked-count">0 of 0 booked</span>
+              </div>
+            </div>
+            <div class="transport-stat-card">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-content">
+                <span class="stat-label">Pending Commute</span>
+                <span class="stat-value text-amber" id="transport-pending-cost">₹0</span>
+                <span class="stat-sub" id="transport-pending-count">0 items remaining</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transport Options Cards Grid -->
+          <div class="transport-grid" id="transport-options-grid">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: WEATHER VIEW -->
+      <section class="tab-pane" id="pane-weather">
+        <div class="weather-dashboard">
+          <!-- Weather Summary Card -->
+          <div class="weather-hero-card">
+            <div class="weather-hero-left">
+              <span class="weather-hero-icon" id="weather-hero-icon">🌤️</span>
+              <div>
+                <h2 class="weather-city" id="weather-city-name">Jaipur Weather Forecast</h2>
+                <p class="weather-condition" id="weather-condition-desc">Clear skies • 28°C</p>
+              </div>
+            </div>
+            <div class="weather-hero-alert" id="weather-hero-alert">
+              <span class="alert-icon">💡</span>
+              <div class="alert-text-block">
+                <strong>Smart Climate Advisory</strong>
+                <p id="weather-alert-message">Sunny weather expected. Pack light cotton clothing, sunscreen, and sunglasses.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7-Day Forecast Grid -->
+          <h3 class="section-title">7-Day Detailed Forecast</h3>
+          <div class="weather-forecast-grid" id="weather-forecast-grid">
+            <!-- 7-day cards injected via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: BUDGET & EXPENSES VIEW -->
+      <section class="tab-pane" id="pane-budget">
+        <div class="budget-dashboard">
+          <!-- =================================================================== -->
+          <!-- EXACT INSTANT INDIAN DESTINATION & DHAM BUDGET CALCULATOR           -->
+          <!-- =================================================================== -->
+          <div class="dham-calc-card budget-section-calc" id="budget-section-calculator">
+            <div class="dham-calc-header">
+              <div class="dham-header-left">
+                <span class="dham-calc-badge">🇮🇳 Instant Trip Budget Calculator</span>
+                <h2 class="dham-calc-title">Pick Any Place, Date & Duration — Get Complete Trip Budget</h2>
+                <p class="dham-calc-subtitle">
+                  Plan any journey across India — Sacred Dhams, Heritage Palaces, Beaches, Snow Peaks, or type your own destination. Our engine instantly calculates realistic costs (Transit, Stays, Activities, and Food) and synthesizes your multi-day itinerary.
+                </p>
+              </div>
+              <div class="dham-header-right">
+                <span class="sacred-symbol">✈️</span>
+              </div>
+            </div>
+
+            <div class="dham-calc-body">
+              <div class="dham-inputs-column">
+                <!-- Typable Destination Input with Curated Combo Select & Datalist -->
+                <div class="form-group">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                    <label for="budget-calc-custom-dest" class="dham-label" style="margin-bottom: 0;">
+                      <span class="label-icon">📍</span> SELECT DESTINATION:
+                    </label>
+                    <span class="dham-dest-hint" style="font-size: 0.76rem; color: #fed7aa; opacity: 0.85;">Type any city or pick from list</span>
+                  </div>
+                  <div class="dham-dest-combo-box">
+                    <input
+                      type="text"
+                      id="budget-calc-custom-dest"
+                      class="glass-input dham-select-lg dham-dest-type-input"
+                      placeholder="Type any destination (e.g. Kedarnath, Mohali, Jaipur, Goa, Manali, Munnar...)"
+                      value="Jaipur, India"
+                      list="budget-calc-destinations-datalist"
+                      autocomplete="off"
+                    />
+                    <select id="budget-calc-select" class="glass-select dham-combo-select" title="Or pick from curated list" aria-label="Curated Destinations">
+                      <option value="">▼ Curated List</option>
+                      <optgroup label="✨ Active Trip">
+                        <option value="current-trip" selected>Active Trip Destination</option>
+                      </optgroup>
+                      <optgroup label="🕉️ Sacred Dham & Temple Yatras">
+                        <option value="do-dham-kedarnath-badrinath">Kedarnath & Badrinath Do Dham Yatra</option>
+                        <option value="char-dham-uttarakhand">Complete Uttarakhand Char Dham Yatra</option>
+                        <option value="vaishno-devi-shiv-khori">Mata Vaishno Devi & Shiv Khori Dham</option>
+                        <option value="tirupati-balaji">Tirupati Balaji & Srikalahasti Divine Darshan</option>
+                        <option value="ayodhya-kashi">Ayodhya Ram Mandir & Kashi Vishwanath Dham</option>
+                        <option value="jagannath-puri">Shree Jagannath Puri Dham & Konark Sun Temple</option>
+                        <option value="dwarka-somnath">Dwarka & Somnath Jyotirlinga Yatra</option>
+                        <option value="ujjain-omkareshwar">Ujjain Mahakaleshwar & Omkareshwar Jyotirlinga</option>
+                        <option value="rameswaram-madurai">Rameswaram 22 Theerthams & Madurai Meenakshi</option>
+                        <option value="amritsar-golden-temple">Amritsar Sri Harmandir Sahib & Wagah Border</option>
+                      </optgroup>
+                      <optgroup label="🏰 Heritage, Palaces & Forts">
+                        <option value="jaipur-pink-city">Jaipur Pink City & Amber Fort</option>
+                        <option value="udaipur-city-of-lakes">Udaipur City of Lakes & Lake Pichola</option>
+                      </optgroup>
+                      <optgroup label="🏖️ Beaches & Coastal Getaways">
+                        <option value="goa-sun-sand">Goa North & South Beaches & Cruises</option>
+                      </optgroup>
+                      <optgroup label="🏔️ Himalayas, Snow & Hill Stations">
+                        <option value="manali-solang-snow">Manali, Solang Valley & Atal Tunnel</option>
+                        <option value="leh-ladakh-high-passes">Leh Ladakh, Pangong Tso & Khardung La</option>
+                        <option value="munnar-alleppey-kerala">Munnar Tea Hills & Alleppey Houseboat</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                  <datalist id="budget-calc-destinations-datalist">
+                    <option value="Jaipur, India">
+                    <option value="Kedarnath & Badrinath">
+                    <option value="Uttarakhand Char Dham">
+                    <option value="Mata Vaishno Devi">
+                    <option value="Tirupati Balaji">
+                    <option value="Ayodhya Ram Mandir & Kashi">
+                    <option value="Jagannath Puri">
+                    <option value="Dwarka & Somnath">
+                    <option value="Ujjain & Omkareshwar">
+                    <option value="Rameswaram & Madurai">
+                    <option value="Amritsar Golden Temple">
+                    <option value="Udaipur">
+                    <option value="Goa">
+                    <option value="Manali">
+                    <option value="Leh Ladakh">
+                    <option value="Munnar & Alleppey">
+                    <option value="Rishikesh">
+                    <option value="Shimla">
+                    <option value="Ooty">
+                    <option value="Mohali">
+                  </datalist>
+                  <div class="dham-quick-dest-chips" id="budget-quick-dest-chips">
+                    <button type="button" class="chip chip-sm active" data-dest="Jaipur">🏰 Jaipur</button>
+                    <button type="button" class="chip chip-sm" data-dest="Kedarnath & Badrinath">🕉️ Kedarnath</button>
+                    <button type="button" class="chip chip-sm" data-dest="Ayodhya & Kashi">🛕 Ayodhya</button>
+                    <button type="button" class="chip chip-sm" data-dest="Goa">🏖️ Goa</button>
+                    <button type="button" class="chip chip-sm" data-dest="Manali">🏔️ Manali</button>
+                    <button type="button" class="chip chip-sm" data-dest="Udaipur">✨ Udaipur</button>
+                    <button type="button" class="chip chip-sm" data-dest="Munnar & Alleppey">🌴 Munnar</button>
+                    <button type="button" class="chip chip-sm" data-dest="Char Dham (Uttarakhand)">🕉️ Char Dham</button>
+                  </div>
+                </div>
+
+                <!-- Duration (Days) - Freely Selected by User for Any Place -->
+                <div class="form-group" style="margin-top: 0.25rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                    <label for="budget-calc-custom-days" class="dham-label" style="margin-bottom: 0;">
+                      <span class="label-icon">⏱️</span> Trip Duration (Days) — Choose Any Days:
+                    </label>
+                    <span id="budget-days-pill-badge" class="badge badge-dates">5 Days</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+                    <input type="number" id="budget-calc-custom-days" class="glass-input" value="5" min="1" max="60" style="max-width: 100px; font-weight: 700; text-align: center;" />
+                    <div class="quick-days-chips" id="budget-quick-days">
+                      <button type="button" class="chip chip-sm" data-days="2">2d</button>
+                      <button type="button" class="chip chip-sm" data-days="3">3d</button>
+                      <button type="button" class="chip chip-sm" data-days="4">4d</button>
+                      <button type="button" class="chip chip-sm active" data-days="5">5d</button>
+                      <button type="button" class="chip chip-sm" data-days="7">7d</button>
+                      <button type="button" class="chip chip-sm" data-days="10">10d</button>
+                      <button type="button" class="chip chip-sm" data-days="14">14d</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="budget-calc-date" class="dham-label">
+                      <span class="label-icon">📅</span> Travel Date:
+                    </label>
+                    <input type="date" id="budget-calc-date" class="glass-input" />
+                  </div>
+                  <div class="form-group">
+                    <label for="budget-calc-time" class="dham-label">
+                      <span class="label-icon">⏱️</span> Departure Time:
+                    </label>
+                    <select id="budget-calc-time" class="glass-select">
+                      <option value="05:00 AM (Early Departure)">05:00 AM (Early Departure)</option>
+                      <option value="06:30 AM (Sunrise Departure)" selected>06:30 AM (Sunrise Departure)</option>
+                      <option value="09:00 AM (Morning Departure)">09:00 AM (Morning Departure)</option>
+                      <option value="02:00 PM (Afternoon Transit)">02:00 PM (Afternoon Transit)</option>
+                      <option value="08:00 PM (Overnight Train/Bus)">08:00 PM (Overnight Train/Bus)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="budget-calc-tier" class="dham-label">
+                      <span class="label-icon">⭐</span> Comfort Tier:
+                    </label>
+                    <select id="budget-calc-tier" class="glass-select">
+                      <option value="Standard" selected>Standard (AC Hotel + Cab / 2AC / Semi-VIP)</option>
+                      <option value="Budget">Budget (Hostel / Dharamshala + Train / Shared)</option>
+                      <option value="Premium">Premium (Luxury Resort / Flight / Innova / VIP)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="budget-calc-travelers" class="dham-label">
+                      <span class="label-icon">👥</span> Number of Travelers:
+                    </label>
+                    <input type="number" id="budget-calc-travelers" class="glass-input" value="1" min="1" max="25" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Live Output & Budget Breakdown Column in Budget Pane -->
+              <div class="dham-results-column">
+                <div class="dham-budget-display">
+                  <span class="budget-ticker-label">Total Estimated Trip Budget</span>
+                  <div class="budget-ticker-figure" id="budget-calc-total">₹35,000</div>
+                  <span class="budget-ticker-sub" id="budget-calc-sub">₹35,000 per person • 5 Days (Standard Tier)</span>
+                </div>
+
+                <div class="dham-breakdown-grid">
+                  <div class="dham-breakdown-item">
+                    <span class="breakdown-icon">🚆</span>
+                    <div class="breakdown-info">
+                      <span class="breakdown-title">Transit & Commute</span>
+                      <span class="breakdown-amt" id="budget-calc-transport">₹11,440</span>
+                    </div>
+                  </div>
+                  <div class="dham-breakdown-item">
+                    <span class="breakdown-icon">🏨</span>
+                    <div class="breakdown-info">
+                      <span class="breakdown-title">Hotels & Stays</span>
+                      <span class="breakdown-amt" id="budget-calc-stay">₹12,000</span>
+                    </div>
+                  </div>
+                  <div class="dham-breakdown-item">
+                    <span class="breakdown-icon">🎟️</span>
+                    <div class="breakdown-info">
+                      <span class="breakdown-title">Sightseeing & Passes</span>
+                      <span class="breakdown-amt" id="budget-calc-activities">₹4,500</span>
+                    </div>
+                  </div>
+                  <div class="dham-breakdown-item">
+                    <span class="breakdown-icon">🍱</span>
+                    <div class="breakdown-info">
+                      <span class="breakdown-title">Food & Dining</span>
+                      <span class="breakdown-amt" id="budget-calc-food">₹7,060</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 1-Click Action Buttons in Budget Pane -->
+                <div class="budget-calc-actions-wrap">
+                  <button id="btn-apply-as-trip-budget" class="btn btn-primary btn-glow" title="Update active trip total budget to this calculated amount">
+                    <span class="btn-icon">🎯</span>
+                    <span>Apply as Trip Budget</span>
+                  </button>
+                  <button id="btn-add-breakdown-as-expenses" class="btn btn-secondary" title="Add itemized breakdown into logged trip expenses">
+                    <span class="btn-icon">📋</span>
+                    <span>Add Itemized Expenses</span>
+                  </button>
+                  <button id="btn-budget-generate-trip" class="btn btn-saffron btn-glow-saffron" title="Generate a new complete multi-day trip with this budget">
+                    <span class="btn-icon">✨</span>
+                    <span>Generate Trip with This Budget</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Overview Cards -->
+          <div class="budget-summary-grid">
+            <div class="budget-stat-card">
+              <span class="stat-title">Allocated Budget</span>
+              <span class="stat-amount" id="budget-stat-total">₹35,000.00</span>
+              <span class="stat-sub">Trip Base Currency: <strong id="budget-curr-code">INR</strong></span>
+            </div>
+            <div class="budget-stat-card">
+              <span class="stat-title">Total Logged Spent</span>
+              <span class="stat-amount" id="budget-stat-spent">₹19,600.00</span>
+              <span class="stat-sub" id="budget-spent-percent">56% of budget</span>
+            </div>
+            <div class="budget-stat-card">
+              <span class="stat-title">Remaining Balance</span>
+              <span class="stat-amount" id="budget-stat-remaining">₹15,400.00</span>
+              <span class="stat-sub">Daily Safe Spend: <strong id="budget-daily-allowance">₹3,080 / day</strong></span>
+            </div>
+          </div>
+
+          <!-- Visual Progress & Donut Chart Split -->
+          <div class="budget-visual-split">
+            <div class="budget-progress-section">
+              <div class="progress-header-row">
+                <span class="progress-title">Budget Utilization</span>
+                <span class="progress-value" id="budget-progress-label">56%</span>
+              </div>
+              <div class="progress-bar-bg-lg">
+                <div class="progress-bar-fill-lg" id="budget-progress-bar" style="width: 56%"></div>
+              </div>
+
+              <!-- Expenses Action Bar -->
+              <div class="expense-actions-bar">
+                <h3>Logged Trip Expenses</h3>
+                <button id="btn-open-add-expense" class="btn btn-primary btn-sm">
+                  <span>+ Log Expense</span>
+                </button>
+              </div>
+
+              <!-- Expense List Table -->
+              <div class="expense-table-container">
+                <table class="expense-table" id="expense-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Description</th>
+                      <th>Category</th>
+                      <th>Amount</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="expense-table-body">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Donut Chart Column -->
+            <div class="budget-chart-column">
+              <div class="chart-card">
+                <h3>Spending by Category</h3>
+                <div class="donut-chart-wrap">
+                  <canvas id="budget-canvas" width="220" height="220"></canvas>
+                </div>
+                <div class="category-legend" id="category-legend-list">
+                  <!-- Legend items injected via JS -->
+                </div>
+              </div>
+
+              <!-- Currency Conversion Tool -->
+              <div class="currency-converter-box">
+                <h4>Instant Currency Converter</h4>
+                <div class="converter-inputs">
+                  <input type="number" id="convert-input-amt" class="glass-input" value="1000" min="1" />
+                  <select id="convert-from-curr" class="glass-select"></select>
+                  <span class="converter-arrow">➡️</span>
+                  <select id="convert-to-curr" class="glass-select"></select>
+                  <div class="converter-result" id="converter-result">= --</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: SMART PACKING LIST VIEW -->
+      <section class="tab-pane" id="pane-packing">
+        <div class="packing-dashboard">
+          <div class="packing-header-card">
+            <div class="packing-summary-text">
+              <h2>Smart Climate-Adapted Packing List</h2>
+              <p id="packing-subtitle">Auto-adjusted based on local temperature forecasts, precipitation probability, and planned activities.</p>
+            </div>
+            <div class="packing-actions">
+              <button id="btn-regenerate-packing" class="btn btn-secondary">
+                <span>🔄 Sync with Live Weather</span>
+              </button>
+              <button id="btn-open-add-packing" class="btn btn-primary">
+                <span>+ Add Custom Item</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Packing Progress Bar -->
+          <div class="packing-progress-bar-wrap">
+            <div class="progress-info-row">
+              <span id="packing-progress-count">0 of 25 items packed</span>
+              <span id="packing-progress-percent">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill fill-success" id="packing-progress-fill" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Packing Categories Grid -->
+          <div class="packing-categories-grid" id="packing-categories-grid">
+            <!-- Dynamically populated categories -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: AI TRAVEL ADVISOR VIEW -->
+      <section class="tab-pane" id="pane-ai">
+        <div class="ai-dashboard">
+          <div class="ai-hero-card">
+            <div class="ai-hero-header">
+              <div class="ai-badge">🤖 Smart Travel AI Engine</div>
+              <h2>Destination Intelligence & Cultural Guide</h2>
+              <p id="ai-destination-intro">Instant local insights, transportation hacks, etiquette customs, and personalized recommendations for your trip.</p>
+            </div>
+
+            <!-- Interactive Ask AI Box -->
+            <div class="ai-ask-box">
+              <div class="ai-input-wrap">
+                <input type="text" id="ai-query-input" class="glass-input" placeholder="Ask anything: e.g., 'Best street food near Johari Bazaar', 'Train etiquette', 'Auto rickshaw negotiation'..." />
+                <button id="btn-ask-ai" class="btn btn-primary">
+                  <span>Ask Advisor</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- AI Response Panel -->
+            <div class="ai-response-panel" id="ai-response-panel" style="display: none;">
+              <div class="ai-response-header">
+                <span class="ai-pulse-dot"></span>
+                <strong>Advisor Response:</strong>
+              </div>
+              <p class="ai-response-text" id="ai-response-text"></p>
+            </div>
+          </div>
+
+          <!-- Curated Local Etiquette & Hacks Grid -->
+          <div class="ai-tips-grid">
+            <div class="glass-panel">
+              <div class="panel-header">
+                <h3>🇮🇳 Essential Local Etiquette</h3>
+              </div>
+              <ul class="tips-list" id="ai-etiquette-list">
+                <!-- Dynamically populated -->
+              </ul>
+            </div>
+
+            <div class="glass-panel">
+              <div class="panel-header">
+                <h3>🚕 Transit & Money Hacks</h3>
+              </div>
+              <ul class="tips-list" id="ai-hacks-list">
+                <!-- Dynamically populated -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- TAB 7: TRIP COMPLETION & TRAVELER FEEDBACK DASHBOARD                  -->
+      <!-- ===================================================================== -->
+      <section class="tab-pane" id="pane-feedback">
+        <div class="feedback-dashboard-wrap">
+          <!-- Dynamic Hero Banner: In-Progress or Celebratory Completed -->
+          <div class="feedback-hero-banner" id="feedback-hero-banner">
+            <div class="fb-hero-icon" id="fb-hero-icon">⭐</div>
+            <div class="fb-hero-text">
+              <span class="fb-status-pill" id="fb-status-pill">Active Journey Review</span>
+              <h2 class="fb-hero-title" id="fb-hero-title">Review Your Journey in <span id="fb-title-dest">Jaipur</span></h2>
+              <p class="fb-hero-desc" id="fb-hero-desc">
+                Share your journey ratings, transit satisfaction, accommodation quality, and insider advice to help fellow travelers.
+              </p>
+            </div>
+            <div class="fb-hero-action">
+              <button type="button" class="btn btn-emerald btn-sm" id="btn-toggle-trip-complete-state">
+                <span class="btn-icon">✅</span>
+                <span id="btn-toggle-complete-text">Mark Trip as Completed</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Feedback Form Container (Shown to leave or edit review) -->
+          <div class="glass-panel feedback-form-card" id="card-feedback-form">
+            <div class="panel-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.85rem; margin-bottom: 1.25rem;">
+              <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                <span>✨</span> Traveler Feedback & Rating
+              </h3>
+              <span style="font-size: 0.8rem; color: #fed7aa;">Your review helps optimize AI travel pace & transit models</span>
+            </div>
+
+            <form id="form-trip-feedback">
+              <!-- Primary Star Rating (1 - 5) -->
+              <div class="fb-overall-rating-box">
+                <label class="fb-field-label">Overall Journey Experience:</label>
+                <div class="interactive-star-rating" id="rating-group-overall" data-value="5">
+                  <button type="button" class="star-btn active" data-val="1" aria-label="1 Star - Poor">★</button>
+                  <button type="button" class="star-btn active" data-val="2" aria-label="2 Stars - Fair">★</button>
+                  <button type="button" class="star-btn active" data-val="3" aria-label="3 Stars - Good">★</button>
+                  <button type="button" class="star-btn active" data-val="4" aria-label="4 Stars - Very Good">★</button>
+                  <button type="button" class="star-btn active" data-val="5" aria-label="5 Stars - Exceptional">★</button>
+                </div>
+                <div class="rating-text-feedback" id="text-rating-overall">⭐⭐⭐⭐⭐ Exceptional (5 / 5)</div>
+              </div>
+
+              <!-- Multi-Category Breakdown Ratings -->
+              <div class="fb-categories-grid">
+                <!-- Transit Rating -->
+                <div class="category-rating-card">
+                  <div class="cat-rating-label">
+                    <span>🚆 Transit & Commute</span>
+                    <span class="cat-score-text" id="score-text-transit">5/5</span>
+                  </div>
+                  <div class="mini-star-rating" id="rating-group-transit" data-value="5">
+                    <button type="button" class="mini-star active" data-val="1">★</button>
+                    <button type="button" class="mini-star active" data-val="2">★</button>
+                    <button type="button" class="mini-star active" data-val="3">★</button>
+                    <button type="button" class="mini-star active" data-val="4">★</button>
+                    <button type="button" class="mini-star active" data-val="5">★</button>
+                  </div>
+                </div>
+
+                <!-- Stays Rating -->
+                <div class="category-rating-card">
+                  <div class="cat-rating-label">
+                    <span>🏨 Stays & Accommodation</span>
+                    <span class="cat-score-text" id="score-text-stays">5/5</span>
+                  </div>
+                  <div class="mini-star-rating" id="rating-group-stays" data-value="5">
+                    <button type="button" class="mini-star active" data-val="1">★</button>
+                    <button type="button" class="mini-star active" data-val="2">★</button>
+                    <button type="button" class="mini-star active" data-val="3">★</button>
+                    <button type="button" class="mini-star active" data-val="4">★</button>
+                    <button type="button" class="mini-star active" data-val="5">★</button>
+                  </div>
+                </div>
+
+                <!-- Activities & Darshan -->
+                <div class="category-rating-card">
+                  <div class="cat-rating-label">
+                    <span>🛕 Sightseeing & Activities</span>
+                    <span class="cat-score-text" id="score-text-activities">5/5</span>
+                  </div>
+                  <div class="mini-star-rating" id="rating-group-activities" data-value="5">
+                    <button type="button" class="mini-star active" data-val="1">★</button>
+                    <button type="button" class="mini-star active" data-val="2">★</button>
+                    <button type="button" class="mini-star active" data-val="3">★</button>
+                    <button type="button" class="mini-star active" data-val="4">★</button>
+                    <button type="button" class="mini-star active" data-val="5">★</button>
+                  </div>
+                </div>
+
+                <!-- Budget & Value -->
+                <div class="category-rating-card">
+                  <div class="cat-rating-label">
+                    <span>💰 Budget Accuracy & Value</span>
+                    <span class="cat-score-text" id="score-text-budget">5/5</span>
+                  </div>
+                  <div class="mini-star-rating" id="rating-group-budget" data-value="5">
+                    <button type="button" class="mini-star active" data-val="1">★</button>
+                    <button type="button" class="mini-star active" data-val="2">★</button>
+                    <button type="button" class="mini-star active" data-val="3">★</button>
+                    <button type="button" class="mini-star active" data-val="4">★</button>
+                    <button type="button" class="mini-star active" data-val="5">★</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recommendation Chips -->
+              <div class="form-group" style="margin-top: 1.25rem;">
+                <label class="fb-field-label">Would you recommend this journey to other travelers?</label>
+                <div class="fb-recommend-chips" id="recommend-chips">
+                  <button type="button" class="recommend-chip active" data-recommend="Highly Recommend">
+                    👍 Highly Recommend
+                  </button>
+                  <button type="button" class="recommend-chip" data-recommend="Good Experience">
+                    👌 Good Experience
+                  </button>
+                  <button type="button" class="recommend-chip" data-recommend="Needs Improvement">
+                    👎 Needs Improvement
+                  </button>
+                </div>
+              </div>
+
+              <!-- Trip Highlights Pills -->
+              <div class="form-group">
+                <label class="fb-field-label">What were the highlights of your trip? (Select all that apply)</label>
+                <div class="fb-highlights-wrap" id="fb-highlights-wrap">
+                  <button type="button" class="chip chip-sm active" data-highlight="Sunrise Darshan">🕉️ Sunrise Darshan</button>
+                  <button type="button" class="chip chip-sm active" data-highlight="Scenic Train Journey">🚆 Scenic Train Journey</button>
+                  <button type="button" class="chip chip-sm" data-highlight="Heritage Palaces & Forts">🏰 Heritage Palaces</button>
+                  <button type="button" class="chip chip-sm" data-highlight="Authentic Local Food">🍛 Local Food & Dining</button>
+                  <button type="button" class="chip chip-sm" data-highlight="Comfortable Stay">🏨 Comfortable Stay</button>
+                  <button type="button" class="chip chip-sm" data-highlight="Accurate Budgeting">💰 Budget Accuracy</button>
+                  <button type="button" class="chip chip-sm" data-highlight="Snow & Mountains">🏔️ Snow & Mountains</button>
+                  <button type="button" class="chip chip-sm" data-highlight="Beach & Relaxed Pace">🏖️ Relaxed Pace</button>
+                </div>
+              </div>
+
+              <!-- Comments Textarea -->
+              <div class="form-group">
+                <label for="fb-comments-input" class="fb-field-label">Your Trip Review & Overall Impressions:</label>
+                <textarea
+                  id="fb-comments-input"
+                  class="glass-input"
+                  rows="3"
+                  placeholder="What was memorable? How was the commute and daily flow?"
+                ></textarea>
+              </div>
+
+              <!-- Tips for Others Textarea -->
+              <div class="form-group">
+                <label for="fb-tips-input" class="fb-field-label">Insider Tips & Advice for Future Travelers:</label>
+                <textarea
+                  id="fb-tips-input"
+                  class="glass-input"
+                  rows="2"
+                  placeholder="e.g. Best time to reach morning darshan, essential items to pack, local cab advice..."
+                ></textarea>
+              </div>
+
+              <!-- Traveler Name & Submit Button -->
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: end;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label for="fb-traveler-name" class="fb-field-label">Reviewer / Traveler Name:</label>
+                  <input type="text" id="fb-traveler-name" class="glass-input" value="Sk Shanu" placeholder="Your Name" />
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <button type="submit" class="btn btn-primary btn-glow" id="btn-submit-feedback" style="width: 100%; height: 42px;">
+                    <span class="btn-icon">🚀</span>
+                    <span>Submit Review & Complete Trip</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Verified Traveler Feedback Display Card (Shown when feedback exists) -->
+          <div class="glass-panel feedback-verified-display" id="card-feedback-display" style="display: none;">
+            <div class="verified-review-header">
+              <div class="verified-reviewer-profile">
+                <div class="verified-avatar" id="disp-avatar">RS</div>
+                <div>
+                  <h4 class="disp-traveler-name" id="disp-traveler-name">Sk Shanu</h4>
+                  <div class="disp-meta">
+                    <span class="verified-badge">✓ Verified Traveler</span>
+                    <span>•</span>
+                    <span id="disp-created-at">Completed recently</span>
+                  </div>
+                </div>
+              </div>
+              <div class="verified-overall-badge">
+                <span class="verified-score" id="disp-overall-score">5.0</span>
+                <span class="verified-stars" id="disp-overall-stars">★★★★★</span>
+              </div>
+            </div>
+
+            <div class="verified-recommend-banner" id="disp-recommend-banner">
+              👍 <span id="disp-recommend-text">Highly Recommended by Traveler</span>
+            </div>
+
+            <div class="disp-ratings-strip" id="disp-ratings-strip">
+              <!-- Populated dynamically via JS -->
+            </div>
+
+            <div class="disp-highlights-box" id="disp-highlights-box">
+              <div class="disp-section-title">Trip Highlights:</div>
+              <div class="disp-tags" id="disp-highlights-tags">
+                <!-- Populated dynamically via JS -->
+              </div>
+            </div>
+
+            <div class="disp-content-box">
+              <div class="disp-section-title">Traveler Review:</div>
+              <p class="disp-review-text" id="disp-review-comments">Loading review...</p>
+            </div>
+
+            <div class="disp-content-box" id="disp-tips-wrap">
+              <div class="disp-section-title">💡 Advice for Future Travelers:</div>
+              <p class="disp-tips-text" id="disp-review-tips">Loading tips...</p>
+            </div>
+
+            <div class="verified-card-actions">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-edit-existing-feedback">
+                <span class="btn-icon">✏️</span>
+                <span>Edit My Review</span>
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" id="btn-reopen-trip" title="Reopen trip if journey is ongoing">
+                <span>Reopen Trip</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 8: LOCAL GUIDES & DIRECT CONNECT -->
+      <section class="tab-pane" id="pane-guides">
+        <div class="workspace-guides-container">
+          <div class="workspace-guides-header">
+            <div class="workspace-guides-meta">
+              <span class="badge badge-destination" id="workspace-guide-dest-badge">Recommended for Destination</span>
+              <h2 class="workspace-guides-title">Connect with Certified Local Guides for this Journey</h2>
+              <p class="workspace-guides-sub" id="workspace-guides-sub">
+                Connect directly with certified local scholars, temple guides, and historians for your trip. Chat instantly or message on WhatsApp.
+              </p>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-workspace-browse-all-guides">
+              <span>Browse All Guides ↗</span>
+            </button>
+          </div>
+          <div class="workspace-guides-grid" id="workspace-guides-grid">
+            <!-- Populated dynamically via JS matching the trip's destination -->
+          </div>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- TRAVEL PACE GLOBAL FOOTER (Available on Every Page & View)                -->
+  <!-- ========================================================================= -->
+  <footer class="travel-pace-footer" id="site-global-footer">
+    <div class="footer-container">
+      <!-- Left Column: Language & Copyright -->
+      <div class="footer-col-brand">
+        <button type="button" class="footer-lang-btn" id="btn-change-language" aria-haspopup="dialog" title="Change display language">
+          <span class="lang-icon">🌐</span>
+          <span id="current-lang-label">Change language</span>
+          <span class="lang-caret">▾</span>
+        </button>
+
+        <div class="footer-brand-summary">
+          <div class="footer-logo">
+            <span class="footer-logo-icon">🧭</span>
+            <span class="footer-logo-text">TRAVEL PACE</span>
+          </div>
+          <p class="footer-tagline">
+            Smart multi-day travel intelligence, authentic Indian heritage & sacred Dhams, world tour guides, curated stays, and dynamic budget tracking.
+          </p>
+        </div>
+
+        <div class="footer-copyright">
+          <p class="copyright-text">Made with <span class="footer-heart">❤️</span> in India • © 2026 Travel Pace Inc.</p>
+          <p class="footer-disclosure">All features & content tailored exclusively to our platform.</p>
+        </div>
+      </div>
+
+      <!-- Center-Left Column: Travel Pace Core Features -->
+      <div class="footer-col-links">
+        <h4 class="footer-heading">Travel Pace</h4>
+        <ul class="footer-nav-list">
+          <li><button type="button" class="footer-link-btn" id="fl-stays">Hotels, Airbnbs & Hostels</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-guides">Verified Local Travel Guides</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-dhams">Sacred Dham & Temple Yatras</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-explore">Curated Indian Journeys</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-world">World Destinations Tour</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-budget-calc">Instant Trip Budget Calculator</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-transit">Transit & Commute Intelligence</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-packing">Smart Packing & Weather</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-pace">Travel Pace Customizer</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-profile">Traveler Profile & Settings</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-terms">Terms & Privacy Policy</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-contact-us">📬 Contact Us</button></li>
+          <li class="footer-contact-li">
+            <div class="footer-contact-box">
+              <span class="footer-contact-title">✉️ Contact Us Directly</span>
+              <a href="mailto:shanu48050@gmail.com?subject=Travel%20Pace%20Inquiry%20-%20Hello%20Shanu" class="footer-contact-email" id="fl-footer-email-link" title="Send email to Sk Shanu">
+                shanu48050@gmail.com
+              </a>
+              <button type="button" class="btn-copy-footer-email" id="btn-copy-footer-email" title="Copy email address to clipboard">
+                <span>📋</span> Copy Email
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Center-Right Column: Guide and Resources -->
+      <div class="footer-col-links">
+        <h4 class="footer-heading">Guide and resources</h4>
+        <ul class="footer-nav-list">
+          <li><button type="button" class="footer-link-btn" id="fl-planners">Trip planners by destination</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-hire-guide">Connect directly with tour guides</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-dham-guides">Sacred Char Dham & temple guides</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-world-guides">Explore cities and countries</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-weather-guide">Weather & best time to visit</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-cost-tracking">Travel budgeting & cost tracking</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-interactive-maps">Interactive maps of destinations</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-hacks">Transit & money hacks</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-darshan">Temple darshan & local etiquette</button></li>
+          <li><button type="button" class="footer-link-btn" id="fl-reviews">Traveler reviews & completed trip feedback</button></li>
+          <li><a href="mailto:shanu48050@gmail.com?subject=Travel%20Pace%20Support%20%26%20Feedback" class="footer-anchor" id="fl-resources-contact" title="Email founder & support">✉️ Support: shanu48050@gmail.com</a></li>
+        </ul>
+      </div>
+
+      <!-- Right Column: Get the App -->
+      <div class="footer-col-app">
+        <h4 class="footer-heading">Get the app</h4>
+        <div class="app-badges-stack">
+          <!-- App Store Official Styled Badge -->
+          <a href="javascript:void(0)" class="store-badge-card" id="btn-app-store" title="Download Travel Pace on the App Store">
+            <div class="store-icon">
+              <svg viewBox="0 0 170 170" width="24" height="24" fill="currentColor">
+                <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.69-3.04-7.67-7.81-11.96-14.34-5.77-8.8-10.27-18.73-13.5-29.77-3.23-11.04-4.85-21.84-4.85-32.4 0-14.34 3.78-26.06 11.34-35.16 7.56-9.1 16.94-13.78 28.14-14.04 4.58 0 9.77 1.25 15.58 3.75 5.81 2.5 9.78 3.75 11.91 3.75 1.91 0 5.86-1.22 11.86-3.66 6-2.45 11.26-3.56 15.78-3.35 11.5.64 20.89 4.79 28.16 12.45-9.79 5.86-14.57 14.16-14.34 24.91.23 8.35 3.42 15.35 9.57 21 6.15 5.65 13.58 8.78 22.3 9.4-2.24 6.74-4.88 13.58-7.92 20.52zM119.22 33.15c0-7.39 2.65-14.28 7.95-20.67 5.3-6.39 11.92-10.55 19.86-12.48.33 1.54.49 2.9.49 4.09 0 7.39-2.73 14.37-8.19 20.93-5.46 6.56-12.19 10.63-20.19 12.21a18.3 18.3 0 0 1 .08-4.08z"/>
+              </svg>
+            </div>
+            <div class="store-text">
+              <span class="store-sub">Download on the</span>
+              <span class="store-main">App Store</span>
+            </div>
+          </a>
+
+          <!-- Google Play Official Styled Badge -->
+          <a href="javascript:void(0)" class="store-badge-card" id="btn-google-play" title="Get Travel Pace on Google Play">
+            <div class="store-icon">
+              <svg viewBox="0 0 512 512" width="24" height="24">
+                <path fill="#4285f4" d="M47.2 24.5l246.6 246.7L47.2 517.9c-7.9-7.2-12.6-17.6-12.6-29.3V53.8c0-11.7 4.7-22.1 12.6-29.3z"/>
+                <path fill="#fbbc04" d="M374.3 185.3L293.8 271.2 47.2 24.5c4.7-4.3 10.9-6.9 17.8-6.9 6.2 0 12.2 2.1 17.2 6l292.1 161.7z"/>
+                <path fill="#ea4335" d="M47.2 517.9l246.6-246.7 80.5 85.9-292.1 161.7c-5 3.9-11 6-17.2 6-6.9 0-13.1-2.6-17.8-6.9z"/>
+                <path fill="#34a853" d="M482.8 244.6L374.3 185.3l-80.5 85.9 80.5 85.9 108.5-59.3c10.3-5.7 16.7-16.5 16.7-28.4s-6.4-22.7-16.7-28.4z"/>
+              </svg>
+            </div>
+            <div class="store-text">
+              <span class="store-sub">GET IT ON</span>
+              <span class="store-main">Google Play</span>
+            </div>
+          </a>
+
+          <!-- PWA Preview Card -->
+          <div class="pwa-preview-card">
+            <span class="pwa-card-icon">📱</span>
+            <div class="pwa-card-info">
+              <strong>Progressive Web App</strong>
+              <span>Install directly to iPhone or Android home screen</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- MODALS                                                                    -->
+  <!-- ========================================================================= -->
+
+  <!-- Modal 1: Smart Trip Generator Wizard -->
+  <dialog id="modal-create-trip" class="glass-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">✨ Create New Indian Trip</h2>
+          <p class="modal-subtitle">Enter an Indian destination to auto-generate daily activities, live weather forecasts, and transit plans.</p>
+        </div>
+        <button class="btn-close" id="btn-close-create" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <!-- Authenticated User Banner -->
+      <div id="create-trip-user-badge" class="planner-user-badge" style="display: none; margin: 0.75rem 0 0.5rem; padding: 0.55rem 0.85rem; border-radius: 8px; background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.28); font-size: 0.85rem; color: #a5b4fc; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 0.45rem;">
+          <span>👤 Planning trip as:</span>
+          <strong id="create-trip-user-name" style="color: #ffffff; font-weight: 700;">Traveler</strong>
+        </div>
+        <span class="badge badge-sm badge-tier" style="font-size: 0.72rem;">Verified Account ✓</span>
+      </div>
+
+      <form id="form-create-trip" class="modal-form">
+        <div class="form-group relative">
+          <label for="input-destination">Destination (Indian Cities & Tourist Spots) *</label>
+          <input type="text" id="input-destination" class="glass-input" placeholder="e.g. Jaipur, Goa, Varanasi, Manali, Munnar, Udaipur, Rishikesh, Amritsar..." required autocomplete="off" />
+          <div id="destination-dropdown" class="autocomplete-dropdown"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="input-start-date">Start Date *</label>
+            <input type="date" id="input-start-date" class="glass-input" required />
+          </div>
+          <div class="form-group">
+            <label for="input-end-date">End Date *</label>
+            <input type="date" id="input-end-date" class="glass-input" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="select-travel-style">Travel Style</label>
+            <select id="select-travel-style" class="glass-select">
+              <option value="Cultural & Heritage" selected>Cultural & Heritage</option>
+              <option value="Spiritual & Pilgrimage">Spiritual & Pilgrimage</option>
+              <option value="Relaxation & Beach">Relaxation & Beach</option>
+              <option value="Adventure & Mountain">Adventure & Mountain</option>
+              <option value="Foodie & Street Food Trail">Foodie & Street Food Trail</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="select-pace">Travel Pace *</label>
+            <select id="select-pace" class="glass-select">
+              <option value="Moderate" selected>⚖️ Moderate (Balanced • 3 acts/day)</option>
+              <option value="Relaxed">🧘 Relaxed (Leisurely • 2 acts/day)</option>
+              <option value="Fast-Paced">⚡ Fast-Paced (Packed • 4-5 acts/day)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="input-budget">Estimated Budget</label>
+            <input type="number" id="input-budget" class="glass-input" value="25000" min="1000" step="1000" required />
+          </div>
+          <div class="form-group">
+            <label for="select-currency">Currency</label>
+            <select id="select-currency" class="glass-select">
+              <option value="INR" selected>INR (₹)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="JPY">JPY (¥)</option>
+              <option value="AUD">AUD (A$)</option>
+              <option value="CAD">CAD (C$)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-create">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-glow" id="btn-submit-create">
+            <span class="btn-spinner" style="display:none">⏳</span>
+            <span>Generate Smart Itinerary</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Modal 2: Add Itinerary Activity -->
+  <dialog id="modal-add-activity" class="glass-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Add Activity to Itinerary</h2>
+        <button class="btn-close" id="btn-close-activity" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <form id="form-add-activity" class="modal-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="activity-day-select">Day Number</label>
+            <select id="activity-day-select" class="glass-select" required></select>
+          </div>
+          <div class="form-group">
+            <label for="activity-slot-select">Time Slot</label>
+            <select id="activity-slot-select" class="glass-select" required>
+              <option value="Morning">🌅 Morning</option>
+              <option value="Afternoon">☀️ Afternoon</option>
+              <option value="Evening">🌙 Evening</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="activity-title">Activity Title *</label>
+          <input type="text" id="activity-title" class="glass-input" placeholder="e.g. Visit Amber Fort & Mirror Palace" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="activity-category">Category</label>
+            <select id="activity-category" class="glass-select">
+              <option value="Attraction">🏛️ Attraction</option>
+              <option value="Food">🍜 Food & Dining</option>
+              <option value="Transport">🚇 Transport</option>
+              <option value="Leisure">🌿 Leisure & Parks</option>
+              <option value="Lodging">🏨 Lodging</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="activity-cost">Estimated Cost (₹)</label>
+            <input type="number" id="activity-cost" class="glass-input" value="0" min="0" step="10" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="activity-location">Location / Landmark Name</label>
+          <input type="text" id="activity-location" class="glass-input" placeholder="e.g. Amer, Jaipur" />
+        </div>
+
+        <div class="form-group">
+          <label for="activity-desc">Notes / Description</label>
+          <textarea id="activity-desc" class="glass-textarea" rows="2" placeholder="Helpful tips, ticket info, timings..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-activity">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Activity</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Modal 3: Add Transport / Commute Option -->
+  <dialog id="modal-add-transport" class="glass-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">🚗 Add Transport & Commute Option</h2>
+          <p class="modal-subtitle">Track transit routes, realistic costs in Indian Rupees, and local booking tips.</p>
+        </div>
+        <button class="btn-close" id="btn-close-transport" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <form id="form-add-transport" class="modal-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="transport-mode-select">Transit Mode *</label>
+            <select id="transport-mode-select" class="glass-select" required>
+              <option value="Train">🚆 Train / Vande Bharat</option>
+              <option value="Flight">✈️ Flight</option>
+              <option value="Cab/Taxi" selected>🚕 Cab / Taxi</option>
+              <option value="Auto-Rickshaw">🛺 Auto-Rickshaw / Tuk-Tuk</option>
+              <option value="Scooter">🛵 Scooter / Bike Rental</option>
+              <option value="Bus">🚌 Volvo / AC Bus</option>
+              <option value="Ferry">⛴️ Ferry / Boat Ride</option>
+              <option value="Metro">🚇 Metro Rail</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="transport-cost-input">Estimated Cost (₹) *</label>
+            <input type="number" id="transport-cost-input" class="glass-input" value="1200" min="0" step="50" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="transport-title-input">Transit Name / Description *</label>
+          <input type="text" id="transport-title-input" class="glass-input" placeholder="e.g. Vande Bharat Express, Prepaid Airport Cab, Scooter Rental" required />
+        </div>
+
+        <div class="form-group">
+          <label for="transport-route-input">Route / From-To</label>
+          <input type="text" id="transport-route-input" class="glass-input" placeholder="e.g. New Delhi (NDLS) → Jaipur Jn (JP)" />
+        </div>
+
+        <div class="form-group">
+          <label for="transport-tips-input">Booking Tips & Local Travel Hacks</label>
+          <textarea id="transport-tips-input" class="glass-textarea" rows="2" placeholder="e.g. Book 120 days early on IRCTC or use Tatkal; use prepaid official counter at station exit gate..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-transport">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Transport Option</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Modal 4: Log Expense -->
+  <dialog id="modal-add-expense" class="glass-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Log Travel Expense</h2>
+        <button class="btn-close" id="btn-close-expense" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <form id="form-add-expense" class="modal-form">
+        <div class="form-group">
+          <label for="expense-title">Expense Description *</label>
+          <input type="text" id="expense-title" class="glass-input" placeholder="e.g. Dinner at Chokhi Dhani" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="expense-amount">Amount (₹) *</label>
+            <input type="number" id="expense-amount" class="glass-input" placeholder="0.00" step="1" min="1" required />
+          </div>
+          <div class="form-group">
+            <label for="expense-category">Category</label>
+            <select id="expense-category" class="glass-select">
+              <option value="Food & Dining">Food & Dining</option>
+              <option value="Accommodation">Accommodation</option>
+              <option value="Transport">Transport</option>
+              <option value="Activities">Activities & Tours</option>
+              <option value="Shopping">Shopping & Souvenirs</option>
+              <option value="Other">Other / Miscellaneous</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="expense-date">Date *</label>
+          <input type="date" id="expense-date" class="glass-input" required />
+        </div>
+
+        <div class="form-group">
+          <label for="expense-notes">Notes (Optional)</label>
+          <input type="text" id="expense-notes" class="glass-input" placeholder="e.g. Paid via UPI, included tip" />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-expense">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Expense</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Modal 5: Add Custom Packing Item -->
+  <dialog id="modal-add-packing" class="glass-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Add Item to Packing List</h2>
+        <button class="btn-close" id="btn-close-packing" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <form id="form-add-packing" class="modal-form">
+        <div class="form-group">
+          <label for="packing-item-name">Item Name *</label>
+          <input type="text" id="packing-item-name" class="glass-input" placeholder="e.g. Sunscreen SPF 50, Power Bank, Walking shoes" required />
+        </div>
+
+        <div class="form-group">
+          <label for="packing-category-select">Category</label>
+          <select id="packing-category-select" class="glass-select">
+            <option value="Clothing">Clothing</option>
+            <option value="Documents">Documents</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Toiletries">Toiletries</option>
+            <option value="Health">Health & Wellness</option>
+            <option value="Gear">Gear & Extras</option>
+          </select>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-packing">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Item</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Modal 6: World Destination Guide Preview & Clone to Workspace -->
+  <dialog id="modal-world-guide" class="glass-modal modal-lg">
+    <div class="modal-content world-modal-content">
+      <div class="modal-header world-modal-top">
+        <div class="modal-title-stack">
+          <div class="world-modal-tag-badge" id="wmodal-tag">Japan • Pop Culture & Heritage</div>
+          <h2 class="modal-title world-title-lg" id="wmodal-title">Japan: Video Game Guide & Cultural Odyssey</h2>
+        </div>
+        <button class="btn-close" id="btn-close-world-modal" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="world-modal-body">
+        <div class="world-modal-hero-cover">
+          <img id="wmodal-cover-img" src="" alt="Destination" class="wmodal-img" />
+          <div class="wmodal-cover-overlay"></div>
+          <div class="wmodal-cover-badges">
+            <span class="badge badge-destination" id="wmodal-dest">Tokyo, Kyoto & Osaka</span>
+            <span class="badge badge-dates" id="wmodal-days">7 Days</span>
+            <span class="badge badge-pace" id="wmodal-pace">⚖️ Moderate Pace</span>
+            <span class="badge badge-style" id="wmodal-style">Pop Culture</span>
+          </div>
+        </div>
+
+        <div class="wmodal-author-bar">
+          <div class="wmodal-author-profile">
+            <img id="wmodal-author-img" src="" alt="Author" class="wmodal-avatar-img" />
+            <div class="wmodal-author-details">
+              <div class="wmodal-name-row">
+                <span class="wmodal-author-name" id="wmodal-author-name">2e</span>
+                <span class="verified-badge-red" title="Verified Creator">✓</span>
+              </div>
+              <span class="wmodal-author-sub" id="wmodal-author-handle">@2e_travels • Verified Curator</span>
+            </div>
+          </div>
+
+          <div class="wmodal-actions-group">
+            <button class="world-action-pill" id="btn-wmodal-like" title="Like guide">
+              <span class="world-pill-icon" id="wmodal-like-icon">🤍</span>
+              <span id="wmodal-likes-count">2,828</span>
+            </button>
+            <div class="world-action-pill pill-static">
+              <span class="world-pill-icon">👁️</span>
+              <span id="wmodal-views-count">221,829</span>
+            </div>
+            <button class="world-action-pill" id="btn-wmodal-share" title="Share guide link">
+              <span class="world-pill-icon">🔗</span>
+              <span>Share</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="wmodal-description-box">
+          <p id="wmodal-desc" class="wmodal-desc-text"></p>
+        </div>
+
+        <div class="wmodal-tabs-header">
+          <span class="wmodal-tab-title">🗺️ Daily Highlights & Curated Route</span>
+          <span class="wmodal-budget-ticker" id="wmodal-budget-display">Est. Total Budget: ₹1,45,000</span>
+        </div>
+
+        <div class="wmodal-itinerary-list" id="wmodal-itinerary-list">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="wmodal-tabs-header" style="margin-top: 1.5rem;">
+          <span class="wmodal-tab-title">🚗 Curated Transit & Commute</span>
+        </div>
+
+        <div class="wmodal-transports-list" id="wmodal-transports-list">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="modal-footer wmodal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-wmodal-close-foot">Close</button>
+          <a href="#" target="_blank" id="btn-wmodal-open-page" class="btn btn-secondary" style="text-decoration: none;">
+            <span>📄</span>
+            <span>Open in New Page ↗</span>
+          </a>
+          <button type="button" class="btn btn-primary btn-glow" id="btn-wmodal-clone">
+            <span class="btn-icon">🚀</span>
+            <span>Clone & Open in Trip Workspace</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: STAY DETAIL & RESERVATION PREVIEW                              -->
+  <!-- ===================================================================== -->
+  <dialog class="modal modal-lg" id="modal-stay-detail">
+    <div class="modal-backdrop-blur"></div>
+    <div class="modal-card modal-world-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="badge badge-destination" id="smodal-category">5★ Luxury Hotel</div>
+          <h2 id="smodal-title" style="margin-top: 0.25rem;">Taj Lake Palace</h2>
+          <span class="smodal-location" id="smodal-location">📍 Udaipur, Rajasthan</span>
+        </div>
+        <button type="button" class="modal-close" id="btn-smodal-close" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
+        <!-- Photo Gallery Carousel -->
+        <div class="smodal-hero-wrap">
+          <img id="smodal-cover-img" src="" alt="Property" class="smodal-cover-img" />
+          <div class="smodal-price-tag">
+            <span class="smodal-price-figure" id="smodal-price-display">₹36,500</span>
+            <span class="smodal-price-unit">/ night</span>
+          </div>
+        </div>
+
+        <!-- Rating, Superhost, Proximity Row -->
+        <div class="smodal-meta-bar">
+          <div class="smodal-rating-badge">
+            <span class="star-icon">★</span>
+            <strong id="smodal-rating">4.95</strong>
+            <span class="smodal-reviews" id="smodal-reviews">(1,840 reviews)</span>
+          </div>
+          <span class="smodal-superhost-pill" id="smodal-superhost">🏆 Verified Superhost</span>
+          <span class="smodal-proximity" id="smodal-proximity">Floating on Lake Pichola</span>
+        </div>
+
+        <!-- Overview -->
+        <div class="smodal-section">
+          <h3>About This Stay</h3>
+          <p id="smodal-overview" class="smodal-text"></p>
+        </div>
+
+        <!-- Room Specs & Policies -->
+        <div class="smodal-specs-grid">
+          <div class="smodal-spec-card">
+            <span class="spec-icon">🛏️</span>
+            <div class="spec-info">
+              <span class="spec-label">Room Type</span>
+              <strong id="smodal-room-type">Palace Lake View Suite</strong>
+            </div>
+          </div>
+          <div class="smodal-spec-card">
+            <span class="spec-icon">👥</span>
+            <div class="spec-info">
+              <span class="spec-label">Capacity</span>
+              <strong id="smodal-max-guests">Up to 2 Guests</strong>
+            </div>
+          </div>
+          <div class="smodal-spec-card">
+            <span class="spec-icon">🛡️</span>
+            <div class="spec-info">
+              <span class="spec-label">Cancellation</span>
+              <strong id="smodal-cancellation">Free cancellation up to 48h</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Amenities Checklist -->
+        <div class="smodal-section">
+          <h3>Popular Amenities & Perks</h3>
+          <div class="smodal-amenities-list" id="smodal-amenities-list">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Address & Map Pin -->
+        <div class="smodal-section">
+          <h3>Address & Location</h3>
+          <p id="smodal-address" class="smodal-address-text">Pichola, Udaipur, Rajasthan</p>
+        </div>
+      </div>
+
+      <div class="modal-footer smodal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-smodal-close-foot">Close</button>
+        <button type="button" class="btn btn-secondary" id="btn-smodal-add-trip">
+          <span class="btn-icon">➕</span>
+          <span>Add to Active Trip Stay</span>
+        </button>
+        <button type="button" class="btn btn-saffron btn-glow-saffron" id="btn-smodal-instant-book">
+          <span class="btn-icon">⚡</span>
+          <span>Instant Reserve</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: INSTANT BOOKING VOUCHER & CONFIRMATION TICKET                  -->
+  <!-- ===================================================================== -->
+  <dialog class="modal modal-md" id="modal-booking-voucher">
+    <div class="modal-backdrop-blur"></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="badge badge-success">✓ Reservation Confirmed</div>
+          <h2 style="margin-top: 0.25rem;">Booking Voucher</h2>
+        </div>
+        <button type="button" class="modal-close" id="btn-voucher-close" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
+        <!-- Realistic Travel Voucher Ticket -->
+        <div class="voucher-ticket">
+          <div class="voucher-ticket-top">
+            <div class="voucher-brand">
+              <span class="voucher-brand-icon">🏨</span>
+              <span class="voucher-brand-name">TRAVEL PACE STAYS</span>
+            </div>
+            <div class="voucher-code-box">
+              <span class="voucher-code-label">CONFIRMATION CODE</span>
+              <span class="voucher-code-val" id="voucher-code-val">TP-84B91E2A</span>
+            </div>
+          </div>
+
+          <div class="voucher-body">
+            <h3 id="voucher-stay-name" class="voucher-stay-title">Taj Lake Palace</h3>
+            <p id="voucher-stay-dest" class="voucher-stay-dest">Udaipur, Rajasthan • 5★ Luxury Palace</p>
+
+            <div class="voucher-info-grid">
+              <div class="voucher-info-item">
+                <span class="voucher-item-lbl">Guest Name</span>
+                <strong id="voucher-guest-name">Valued Traveler</strong>
+              </div>
+              <div class="voucher-info-item">
+                <span class="voucher-item-lbl">Travelers</span>
+                <strong id="voucher-guests-count">2 Guests (1 Room)</strong>
+              </div>
+              <div class="voucher-info-item">
+                <span class="voucher-item-lbl">Check-in</span>
+                <strong id="voucher-checkin">2026-09-20 (02:00 PM)</strong>
+              </div>
+              <div class="voucher-info-item">
+                <span class="voucher-item-lbl">Check-out</span>
+                <strong id="voucher-checkout">2026-09-22 (11:00 AM)</strong>
+              </div>
+            </div>
+
+            <div class="voucher-fare-table">
+              <div class="voucher-fare-row">
+                <span id="voucher-rate-label">₹36,500 × 2 nights</span>
+                <span id="voucher-subtotal">₹73,000</span>
+              </div>
+              <div class="voucher-fare-row">
+                <span>Taxes & Service Fees (12% GST)</span>
+                <span id="voucher-taxes">₹8,760</span>
+              </div>
+              <div class="voucher-fare-row voucher-total-row">
+                <span>Total Paid (Simulated)</span>
+                <strong id="voucher-total" class="voucher-total-figure">₹81,760</strong>
+              </div>
+            </div>
+
+            <div class="voucher-barcode-bar">
+              <div class="barcode-stripes">||| | |||| || ||| |||| | || |||| ||| || ||||</div>
+              <span class="barcode-sub">Present this digital voucher upon arrival at check-in desk</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <div class="modal-footer" style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+        <button type="button" class="btn btn-secondary" id="btn-voucher-done">Done</button>
+        <button type="button" class="btn btn-primary btn-glow" id="btn-voucher-add-expense">
+          <span class="btn-icon">💰</span>
+          <span>Add Expense to Active Trip</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: AUTHENTICATION (SIGN IN & SIGN UP)                             -->
+  <!-- ===================================================================== -->
+  <dialog class="modal modal-auth-dialog" id="modal-auth">
+    <div class="modal-backdrop-blur"></div>
+    <div class="modal-card modal-auth-card">
+      <div class="auth-modal-header">
+        <div class="auth-brand-badge">
+          <span class="auth-logo-icon">🧭</span>
+          <div class="auth-brand-text">
+            <span class="auth-brand-title">TRAVEL PACE</span>
+            <span class="auth-brand-sub">Smart Journeys & Stays</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close" id="btn-auth-modal-close" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <!-- Segmented Tab Navigation -->
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab-btn active" id="tab-btn-signin" role="tab" aria-selected="true">
+          <span>🔑 Sign In</span>
+        </button>
+        <button type="button" class="auth-tab-btn" id="tab-btn-signup" role="tab" aria-selected="false">
+          <span>✨ Create Account</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: SIGN IN PANEL -->
+      <div class="auth-tab-panel active" id="auth-panel-signin">
+        <!-- 1-Click Demo Login Box -->
+        <div class="demo-login-box">
+          <div class="demo-login-meta">
+            <span class="demo-badge">⚡ Quick Access</span>
+            <span class="demo-title">Test Drive with 1-Click Demo</span>
+          </div>
+          <button type="button" class="btn btn-demo-auth" id="btn-demo-login">
+            <span class="demo-icon">👤</span>
+            <span>Sign In as Sk Shanu</span>
+          </button>
+        </div>
+
+        <div class="auth-separator">
+          <span>or sign in with email</span>
+        </div>
+
+        <form id="form-signin" class="auth-form" novalidate>
+          <div class="auth-error-banner" id="signin-error-banner" style="display: none;"></div>
+
+          <div class="form-group">
+            <label for="signin-email" class="form-label">Email Address</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">✉️</span>
+              <input type="email" id="signin-email" class="form-input auth-input" placeholder="name@example.com" required autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="signin-password" class="form-label">Password</label>
+              <button type="button" class="auth-link-text" id="btn-forgot-password">Forgot password?</button>
+            </div>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">🔒</span>
+              <input type="password" id="signin-password" class="form-input auth-input" placeholder="Enter your password" required autocomplete="current-password" />
+              <button type="button" class="btn-pwd-peek" id="btn-peek-signin-pwd" title="Show or hide password" aria-label="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+
+          <div class="form-options-row">
+            <label class="remember-wrap">
+              <input type="checkbox" id="signin-remember" checked />
+              <span>Keep me signed in</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-glow btn-auth-submit" id="btn-submit-signin">
+            <span class="btn-icon">🚀</span>
+            <span>Sign In to TRAVEL PACE</span>
+          </button>
+        </form>
+
+        <div class="auth-switch-prompt">
+          <span>Don't have an account yet?</span>
+          <button type="button" class="auth-switch-link" id="link-switch-to-signup">Create a free account</button>
+        </div>
+      </div>
+
+      <!-- TAB 2: SIGN UP / CREATE ACCOUNT PANEL -->
+      <div class="auth-tab-panel" id="auth-panel-signup" style="display: none;">
+        <div class="signup-intro">
+          <h3>Begin Your Next Adventure</h3>
+          <p>Create an account to save custom itineraries, manage hotel bookings, and sync your travel budget.</p>
+        </div>
+
+        <form id="form-signup" class="auth-form" novalidate>
+          <div class="auth-error-banner" id="signup-error-banner" style="display: none;"></div>
+
+          <div class="form-group">
+            <label for="signup-name" class="form-label">Full Name</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">👤</span>
+              <input type="text" id="signup-name" class="form-input auth-input" placeholder="e.g. Sk Shanu" required autocomplete="name" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signup-email" class="form-label">Email Address</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">✉️</span>
+              <input type="email" id="signup-email" class="form-input auth-input" placeholder="you@domain.com" required autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signup-password" class="form-label">Create Password</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">🔒</span>
+              <input type="password" id="signup-password" class="form-input auth-input" placeholder="At least 6 characters" minlength="6" required autocomplete="new-password" />
+              <button type="button" class="btn-pwd-peek" id="btn-peek-signup-pwd" title="Show or hide password" aria-label="Toggle password visibility">👁️</button>
+            </div>
+            <!-- Dynamic Password Strength Bar -->
+            <div class="pwd-strength-container" id="pwd-strength-container" style="display: none;">
+              <div class="pwd-strength-meter">
+                <div class="pwd-strength-bar" id="pwd-strength-bar"></div>
+              </div>
+              <span class="pwd-strength-label" id="pwd-strength-label">Strength</span>
+            </div>
+          </div>
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label for="signup-currency" class="form-label">Preferred Currency</label>
+              <select id="signup-currency" class="form-select auth-select">
+                <option value="INR" selected>INR (₹)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="JPY">JPY (¥)</option>
+                <option value="AUD">AUD (A$)</option>
+                <option value="CAD">CAD (C$)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="signup-phone" class="form-label">Mobile (Optional)</label>
+              <input type="tel" id="signup-phone" class="form-input auth-input" placeholder="+91 98765 43210" />
+            </div>
+          </div>
+
+          <div class="form-options-row">
+            <label class="remember-wrap">
+              <input type="checkbox" id="signup-terms" checked required />
+              <span>I agree to the <a href="#" class="auth-inline-link">Terms</a> & <a href="#" class="auth-inline-link">Privacy Policy</a></span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-glow btn-auth-submit" id="btn-submit-signup">
+            <span class="btn-icon">✨</span>
+            <span>Create My Traveler Account</span>
+          </button>
+        </form>
+
+        <div class="auth-switch-prompt">
+          <span>Already have an account?</span>
+          <button type="button" class="auth-switch-link" id="link-switch-to-signin">Sign in here</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL: USER PROFILE & ACCOUNT SETTINGS                                -->
+  <!-- ===================================================================== -->
+  <dialog class="modal modal-md" id="modal-user-profile">
+    <div class="modal-backdrop-blur"></div>
+    <div class="modal-card modal-profile-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="badge badge-tier">✨ Pro Traveler Profile</div>
+          <h2>My Traveler Account</h2>
+        </div>
+        <button type="button" class="modal-close" id="btn-profile-modal-close" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="profile-hero-card">
+          <div class="profile-avatar-large" id="profile-avatar-large">RS</div>
+          <div class="profile-meta-wrap">
+            <h3 id="profile-fullname-display">Sk Shanu</h3>
+            <span class="profile-email-display" id="profile-email-display">shanu48050@gmail.com</span>
+            <div class="profile-chips-row">
+              <span class="chip chip-sm active">Verified Explorer</span>
+              <span class="chip chip-sm" id="profile-member-since">Member since Sept 2026</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="form-edit-profile" class="profile-edit-form">
+          <div class="form-group">
+            <label for="edit-profile-name" class="form-label">Display Name</label>
+            <input type="text" id="edit-profile-name" class="form-input" required />
+          </div>
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label for="edit-profile-phone" class="form-label">Phone Number</label>
+              <input type="tel" id="edit-profile-phone" class="form-input" placeholder="+91 ..." />
+            </div>
+            <div class="form-group">
+              <label for="edit-profile-currency" class="form-label">Preferred Currency</label>
+              <select id="edit-profile-currency" class="form-select">
+                <option value="INR">INR (₹)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="JPY">JPY (¥)</option>
+                <option value="AUD">AUD (A$)</option>
+                <option value="CAD">CAD (C$)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="profile-stats-card">
+            <div class="pstat-item">
+              <span class="pstat-icon">🗺️</span>
+              <div class="pstat-val" id="pstat-trips-count">17</div>
+              <span class="pstat-lbl">Indian Journeys</span>
+            </div>
+            <div class="pstat-item">
+              <span class="pstat-icon">🏨</span>
+              <div class="pstat-val" id="pstat-stays-count">20</div>
+              <span class="pstat-lbl">Curated Stays</span>
+            </div>
+            <div class="pstat-item">
+              <span class="pstat-icon">🌍</span>
+              <div class="pstat-val">10+</div>
+              <span class="pstat-lbl">World Guides</span>
+            </div>
+          </div>
+
+          <div class="modal-footer" style="display: flex; gap: 0.75rem; justify-content: space-between; margin-top: 1.5rem; padding: 0;">
+            <button type="button" class="btn btn-outline btn-danger-soft" id="btn-profile-logout">
+              <span class="btn-icon">🚪</span>
+              <span>Sign Out</span>
+            </button>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-secondary" id="btn-profile-cancel">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-glow" id="btn-save-profile">
+                <span>Save Changes</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: LANGUAGE SWITCHER DIALOG                                           -->
+  <!-- ========================================================================= -->
+  <dialog id="modal-language-select" class="glass-modal">
+    <div class="modal-content modal-sm" style="max-width: 440px;">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">🌐 Select Language</h2>
+          <p class="modal-subtitle">Choose your preferred language for Travel Pace.</p>
+        </div>
+        <button class="btn-close" id="btn-close-language" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="language-options-list" id="language-options-list" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
+        <button type="button" class="lang-option-row active" data-lang="en">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="lang-flag" style="font-size: 1.4rem;">🇬🇧</span>
+            <div style="text-align: left;">
+              <strong style="display: block; font-size: 0.95rem; color: #f0f6fc;">English</strong>
+              <span style="font-size: 0.75rem; color: #8b949e;">Default (Global)</span>
+            </div>
+          </div>
+          <span class="lang-check" style="color: #ff9933; font-weight: 700;">✓</span>
+        </button>
+        <button type="button" class="lang-option-row" data-lang="hi">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="lang-flag" style="font-size: 1.4rem;">🇮🇳</span>
+            <div style="text-align: left;">
+              <strong style="display: block; font-size: 0.95rem; color: #f0f6fc;">हिन्दी (Hindi)</strong>
+              <span style="font-size: 0.75rem; color: #8b949e;">India</span>
+            </div>
+          </div>
+          <span class="lang-check" style="display: none; color: #ff9933; font-weight: 700;">✓</span>
+        </button>
+        <button type="button" class="lang-option-row" data-lang="es">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="lang-flag" style="font-size: 1.4rem;">🇪🇸</span>
+            <div style="text-align: left;">
+              <strong style="display: block; font-size: 0.95rem; color: #f0f6fc;">Español (Spanish)</strong>
+              <span style="font-size: 0.75rem; color: #8b949e;">Spain & Americas</span>
+            </div>
+          </div>
+          <span class="lang-check" style="display: none; color: #ff9933; font-weight: 700;">✓</span>
+        </button>
+        <button type="button" class="lang-option-row" data-lang="fr">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="lang-flag" style="font-size: 1.4rem;">🇫🇷</span>
+            <div style="text-align: left;">
+              <strong style="display: block; font-size: 0.95rem; color: #f0f6fc;">Français (French)</strong>
+              <span style="font-size: 0.75rem; color: #8b949e;">France & Europe</span>
+            </div>
+          </div>
+          <span class="lang-check" style="display: none; color: #ff9933; font-weight: 700;">✓</span>
+        </button>
+        <button type="button" class="lang-option-row" data-lang="de">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="lang-flag" style="font-size: 1.4rem;">🇩🇪</span>
+            <div style="text-align: left;">
+              <strong style="display: block; font-size: 0.95rem; color: #f0f6fc;">Deutsch (German)</strong>
+              <span style="font-size: 0.75rem; color: #8b949e;">Germany & Europe</span>
+            </div>
+          </div>
+          <span class="lang-check" style="display: none; color: #ff9933; font-weight: 700;">✓</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: DIRECT GUIDE LIVE CHAT                                             -->
+  <!-- ========================================================================= -->
+  <dialog id="modal-guide-chat" class="modal modal-chat-dialog">
+    <div class="modal-backdrop-blur"></div>
+    <div class="modal-card modal-chat-card">
+      <!-- Chat Header -->
+      <div class="guide-chat-header">
+        <div class="guide-chat-guide-meta">
+          <div class="guide-chat-avatar-wrap">
+            <img src="" alt="Guide" id="chat-guide-avatar" class="guide-chat-avatar" />
+            <span class="guide-chat-online-dot" title="Online now"></span>
+          </div>
+          <div class="guide-chat-info">
+            <div class="guide-chat-name-row">
+              <strong id="chat-guide-name">Guide Name</strong>
+              <span class="badge badge-xs badge-tier" id="chat-guide-badge">Verified Guide</span>
+            </div>
+            <span class="guide-chat-sub" id="chat-guide-sub">Usually replies within 5 minutes</span>
+          </div>
+        </div>
+        <div class="guide-chat-header-actions">
+          <a href="javascript:void(0)" id="btn-chat-header-whatsapp" class="btn-chat-action-icon" title="Connect on WhatsApp" target="_blank" rel="noopener noreferrer">
+            <span class="wa-icon-mini">💬</span>
+            <span class="wa-text-mini">WhatsApp</span>
+          </a>
+          <button type="button" class="modal-close" id="btn-close-guide-chat" aria-label="Close Chat">&times;</button>
+        </div>
+      </div>
+
+      <!-- Chat Destination Context Strip -->
+      <div class="guide-chat-context-strip">
+        <span class="chat-context-icon">📍</span>
+        <span id="chat-guide-dest-banner">Connecting regarding destination</span>
+      </div>
+
+      <!-- Messages Thread -->
+      <div class="guide-chat-messages" id="guide-chat-thread">
+        <!-- Injected dynamically -->
+      </div>
+
+      <!-- Quick Suggested Inquiry Prompts -->
+      <div class="guide-chat-prompts" id="guide-chat-prompts">
+        <button type="button" class="chat-prompt-chip" data-prompt="What is the best time for temple darshan and sightseeing?">
+          🕒 Best visit timing?
+        </button>
+        <button type="button" class="chat-prompt-chip" data-prompt="Can you customize a tour for families or senior citizens?">
+          👨‍👩‍👧 Family/Senior friendly?
+        </button>
+        <button type="button" class="chat-prompt-chip" data-prompt="What are your fees and availability for tomorrow?">
+          💰 Fees & availability?
+        </button>
+        <button type="button" class="chat-prompt-chip" data-prompt="Can we connect directly on WhatsApp or over a call?">
+          📞 WhatsApp / Call?
+        </button>
+      </div>
+
+      <!-- Chat Input Form -->
+      <form id="form-guide-chat" class="guide-chat-form">
+        <input
+          type="text"
+          id="input-guide-chat-msg"
+          class="guide-chat-input"
+          placeholder="Ask a question about your trip..."
+          autocomplete="off"
+          required
+        />
+        <button type="submit" id="btn-guide-chat-send" class="btn-guide-chat-send" title="Send Message">
+          <span>➤</span>
+        </button>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: DIRECT GUIDE BOOKING & INQUIRY                                      -->
+  <!-- ========================================================================= -->
+  <dialog id="modal-guide-booking" class="modal modal-booking-dialog">
+    <div class="modal-backdrop-blur"></div>
+    <div class="modal-card modal-booking-card">
+      <div class="modal-header">
+        <div class="auth-brand-badge">
+          <span class="auth-logo-icon">🧑‍🌾</span>
+          <div class="auth-brand-text">
+            <span class="auth-brand-title">Hire Local Guide</span>
+            <span class="auth-brand-sub">Direct connection & instant booking inquiry</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close" id="btn-close-guide-booking" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <!-- Selected Guide Card Summary -->
+      <div class="booking-guide-summary" id="booking-guide-summary">
+        <img src="" alt="Guide" id="booking-guide-avatar" class="booking-guide-avatar" />
+        <div class="booking-guide-meta">
+          <div class="booking-guide-name-row">
+            <h4 id="booking-guide-name">Guide Name</h4>
+            <span class="badge badge-sm badge-tier" id="booking-guide-dest">Varanasi</span>
+          </div>
+          <p class="booking-guide-title" id="booking-guide-title">Chief Ghat Historian</p>
+          <div class="booking-guide-rate-row">
+            <span class="booking-rate-val" id="booking-guide-rate">₹2,400 / day</span>
+            <span class="booking-badge-verified">✓ 100% Certified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Direct 1-Click Connect Bar -->
+      <div class="direct-connect-actions-bar">
+        <a href="javascript:void(0)" id="btn-guide-whatsapp-direct" class="btn-direct-connect-wa" target="_blank" rel="noopener noreferrer">
+          <span class="btn-icon">💬</span>
+          <span>Connect via WhatsApp</span>
+        </a>
+        <a href="javascript:void(0)" id="btn-guide-phone-direct" class="btn-direct-connect-phone">
+          <span class="btn-icon">📞</span>
+          <span>Call Guide Directly</span>
+        </a>
+      </div>
+
+      <div class="auth-separator">
+        <span>or submit formal booking inquiry</span>
+      </div>
+
+      <!-- Booking Form -->
+      <form id="form-guide-booking" class="modal-form">
+        <input type="hidden" id="booking-guide-id" />
+
+        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="booking-tour-date" class="form-label">Tour Date *</label>
+            <input type="date" id="booking-tour-date" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label for="booking-duration-type" class="form-label">Duration *</label>
+            <select id="booking-duration-type" class="form-select">
+              <option value="full_day" selected>Full Day Tour (6-8 Hours)</option>
+              <option value="half_day">Half Day Tour (3-4 Hours)</option>
+              <option value="custom">Custom Walking / Darshan Tour</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="booking-group-size" class="form-label">Number of Travelers</label>
+            <select id="booking-group-size" class="form-select">
+              <option value="1">1 Person (Solo Traveler)</option>
+              <option value="2" selected>2 Persons (Couple / Friends)</option>
+              <option value="3">3 Persons</option>
+              <option value="4">4 Persons (Family)</option>
+              <option value="6">5-8 Persons (Group)</option>
+              <option value="10">8+ Persons (Private Tour)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="booking-client-phone" class="form-label">Your Phone / WhatsApp *</label>
+            <input type="tel" id="booking-client-phone" class="form-input" placeholder="+91 98765 43210" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="booking-client-notes" class="form-label">Pickup Hotel or Special Requests</label>
+          <textarea
+            id="booking-client-notes"
+            class="form-input form-textarea"
+            rows="2"
+            placeholder="e.g. Staying at Taj Ganges; need sunrise boat darshan and senior citizen friendly pace."
+          ></textarea>
+        </div>
+
+        <div class="booking-estimate-box">
+          <div class="estimate-row">
+            <span>Estimated Guide Fee:</span>
+            <strong id="booking-estimated-fee">₹2,400</strong>
+          </div>
+          <p class="estimate-sub">Pay directly to guide upon arrival. No advance platform commission.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-glow" id="btn-submit-guide-booking">
+          <span class="btn-icon">🚀</span>
+          <span>Submit Direct Inquiry & Get Voucher</span>
+        </button>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: GUIDE BOOKING VOUCHER (Confirmation)                               -->
+  <!-- ========================================================================= -->
+  <dialog id="modal-guide-voucher" class="modal modal-voucher-dialog">
+    <div class="modal-backdrop-blur"></div>
+    <div class="modal-card modal-voucher-card">
+      <div class="voucher-success-header">
+        <div class="voucher-success-icon">🎉</div>
+        <h3>Guide Inquiry Confirmed!</h3>
+        <p>Your direct guide connection voucher has been generated and dispatched to the guide.</p>
+      </div>
+
+      <div class="voucher-ticket">
+        <div class="voucher-code-strip">
+          <span class="vcode-label">CONFIRMATION VOUCHER CODE</span>
+          <strong class="vcode-val" id="disp-voucher-code">TPG-ABC1234</strong>
+        </div>
+
+        <div class="voucher-details-grid">
+          <div class="vdetail-item">
+            <span class="vdetail-label">Local Guide:</span>
+            <strong id="disp-voucher-guide-name">Pt. Rameshwar Shastri</strong>
+          </div>
+          <div class="vdetail-item">
+            <span class="vdetail-label">Destination:</span>
+            <strong id="disp-voucher-dest">Varanasi</strong>
+          </div>
+          <div class="vdetail-item">
+            <span class="vdetail-label">Tour Date:</span>
+            <strong id="disp-voucher-date">2026-10-15</strong>
+          </div>
+          <div class="vdetail-item">
+            <span class="vdetail-label">Duration & Group:</span>
+            <strong id="disp-voucher-group">Full Day • 2 Travelers</strong>
+          </div>
+          <div class="vdetail-item">
+            <span class="vdetail-label">Direct Phone:</span>
+            <strong id="disp-voucher-phone">+91 98391 24580</strong>
+          </div>
+          <div class="vdetail-item">
+            <span class="vdetail-label">Estimated Fee:</span>
+            <strong id="disp-voucher-fee" style="color: #4ade80;">₹2,400</strong>
+          </div>
+        </div>
+
+        <div class="voucher-actions-row">
+          <a href="javascript:void(0)" id="btn-voucher-open-whatsapp" class="btn btn-emerald btn-block" target="_blank" rel="noopener noreferrer">
+            <span class="btn-icon">💬</span>
+            <span>Open WhatsApp to Confirm with Guide</span>
+          </a>
+          <button type="button" class="btn btn-secondary btn-block" id="btn-close-voucher">
+            <span>Done & Return</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: CONTACT US                                                         -->
+  <!-- ========================================================================= -->
+  <dialog id="modal-contact-us" class="modal modal-md">
+    <div class="modal-backdrop-blur"></div>
+    <div class="modal-card modal-contact-card">
+      <div class="modal-header">
+        <div class="auth-brand-badge">
+          <span class="auth-logo-icon">📬</span>
+          <div class="auth-brand-text">
+            <span class="auth-brand-title">Contact Us</span>
+            <span class="auth-brand-sub">Direct support & founder correspondence</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close" id="btn-close-contact-modal" aria-label="Close Contact Us dialog">&times;</button>
+      </div>
+
+      <div class="contact-modal-body">
+        <div class="contact-card-highlight">
+          <div class="contact-icon-large">✉️</div>
+          <div class="contact-details">
+            <span class="contact-role-badge">Founder & Creator</span>
+            <h3 class="contact-name">Sk Shanu</h3>
+            <a href="mailto:shanu48050@gmail.com" class="contact-primary-email" id="modal-primary-email">
+              shanu48050@gmail.com
+            </a>
+            <p class="contact-desc">Feel free to reach out with any inquiries, feature suggestions, partnership proposals, or travel planning questions.</p>
+          </div>
+        </div>
+
+        <div class="contact-actions-grid">
+          <a href="mailto:shanu48050@gmail.com?subject=Travel%20Pace%20Inquiry%20-%20Hello%20Shanu" class="btn btn-primary btn-block btn-glow">
+            <span class="btn-icon">📨</span>
+            <span>Open in Email App</span>
+          </a>
+          <button type="button" class="btn btn-secondary btn-block" id="btn-copy-modal-email">
+            <span class="btn-icon">📋</span>
+            <span>Copy Email Address</span>
+          </button>
+        </div>
+
+        <div class="contact-quick-msg-wrap">
+          <h4 class="quick-msg-title">Quick Inquiry Draft</h4>
+          <form id="form-quick-contact" class="quick-contact-form">
+            <div class="form-group">
+              <label for="contact-subject" class="form-label">Subject *</label>
+              <input type="text" id="contact-subject" class="form-input" placeholder="e.g. Inquiry regarding Char Dham / Kedarnath Trip" required />
+            </div>
+            <div class="form-group">
+              <label for="contact-body" class="form-label">Message *</label>
+              <textarea id="contact-body" class="form-input form-textarea" rows="3" placeholder="Hello Shanu, I am using Travel Pace and would like to ask..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-emerald btn-block" id="btn-send-draft-mail">
+              <span class="btn-icon">🚀</span>
+              <span>Send Message via Email</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Application JS Modules -->
+  <script src="/static/js/map.js?v=7"></script>
+  <script src="/static/js/weather.js?v=7"></script>
+  <script src="/static/js/budget.js?v=7"></script>
+  <script src="/static/js/app.js?v=7"></script>
+</body>
+</html>
